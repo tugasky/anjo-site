@@ -18,11 +18,12 @@
 }
 
 /* Dark Mode Variables */
-[data-theme="dark"] {
+body.dark-mode {
     --text-color: #f9fafb;
     --bg-color: #111827;
     --section-bg: #1f2937;
     --border-color: #374151;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 /* Global Reset */
@@ -60,6 +61,10 @@ p {
     color: #6b7280;
 }
 
+body.dark-mode p {
+    color: #9ca3af;
+}
+
 a {
     color: var(--accent-color);
     text-decoration: none;
@@ -85,7 +90,7 @@ a {
     transition: var(--transition);
 }
 
-[data-theme="dark"] .header {
+body.dark-mode .header {
     background: rgba(17, 24, 39, 0.95);
 }
 
@@ -520,7 +525,8 @@ a {
 }
 
 .service-card p {
-    color: #6b7280;
+    color: var(--text-color);
+    opacity: 0.7;
     line-height: 1.6;
 }
 
@@ -534,7 +540,8 @@ a {
     text-align: center;
     margin-bottom: 3rem;
     font-size: 1.2rem;
-    color: #6b7280;
+    color: var(--text-color);
+    opacity: 0.7;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -605,7 +612,8 @@ a {
 }
 
 .portfolio-item p {
-    color: #6b7280;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 0.9rem;
     line-height: 1.5;
 }
@@ -625,7 +633,8 @@ a {
 .about-content p {
     font-size: 1.2rem;
     margin-bottom: 3rem;
-    color: #6b7280;
+    color: var(--text-color);
+    opacity: 0.7;
 }
 
 .stats {
@@ -672,7 +681,8 @@ a {
 
 .contact-info p {
     margin-bottom: 1rem;
-    color: #6b7280;
+    color: var(--text-color);
+    opacity: 0.7;
 }
 
 .contact-info strong {
@@ -769,6 +779,11 @@ a {
     margin-top: 5rem;
 }
 
+body.dark-mode .footer {
+    background: #0f172a;
+    color: #f9fafb;
+}
+
 .footer-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -779,11 +794,12 @@ a {
 .footer-brand h3 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    color: white;
+    color: var(--text-color);
 }
 
 .footer-brand p {
-    color: #9ca3af;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 0.9rem;
 }
 
@@ -797,7 +813,8 @@ a {
 .footer-links .footer-link {
     background: none;
     border: none;
-    color: #9ca3af;
+    color: var(--text-color);
+    opacity: 0.7;
     text-decoration: none;
     font-size: 0.9rem;
     cursor: pointer;
@@ -806,14 +823,16 @@ a {
 }
 
 .footer-links .footer-link:hover {
-    color: white;
+    color: var(--text-color);
+    opacity: 1;
 }
 
 .footer-bottom {
-    border-top: 1px solid #374151;
+    border-top: 1px solid var(--border-color);
     padding-top: 1rem;
     text-align: center;
-    color: #9ca3af;
+    color: var(--text-color);
+    opacity: 0.7;
     font-size: 0.9rem;
 }
 
@@ -1050,6 +1069,150 @@ body {
 .submit-button:hover::before {
     width: 300px;
     height: 300px;
+}
+
+/* Dark Mode Toggle */
+input[type=checkbox].pristine {
+    --off: #c7cad1;
+    --mid: #6366f1;
+    --on: #4f46e5;
+    --transDur: 0.5s;
+    --timing: cubic-bezier(0.6,0,0.4,1);
+    animation: bgOff var(--transDur) var(--timing);
+    background-color: var(--off);
+    border-radius: 0.67em / 0.5em;
+    box-shadow:
+        0 0.05em 0.1em #00000007 inset,
+        0 -0.25em 0.25em #0001 inset,
+        0 -0.5em 0 #0001 inset,
+        0 0.1em 0.1em #0001;
+    cursor: pointer;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 2.25em;
+    height: 1.5em;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 10;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+input[type=checkbox].pristine:before {
+    animation: handleOff var(--transDur) var(--timing);
+    background-attachment: fixed;
+    background-position: 50% calc(50% - 0.1875em);
+    border-radius: 0.5em / 0.375em;
+    box-shadow:
+        0 0.175em 0.175em 0 #0001 inset,
+        0 0.375em 0 #0002 inset,
+        0 0.375em 0 var(--off) inset,
+        0 0.475em 0.1em #0001 inset;
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0.125em;
+    left: 0.125em;
+    width: 1em;
+    height: 0.75em;
+}
+
+input[type=checkbox].pristine:checked {
+    animation: bgOn var(--transDur) var(--timing) forwards;
+}
+
+input[type=checkbox].pristine:checked:before {
+    animation: handleOn var(--transDur) var(--timing) forwards;
+}
+
+input[type=checkbox].pristine:focus {
+    outline: none;
+}
+
+/* Dark mode animations */
+@keyframes bgOff {
+    from {
+        background-color: var(--on);
+    }
+    50% {
+        background-color: var(--mid);
+    }
+    to {
+        background-color: var(--off);
+    }
+}
+
+@keyframes bgOn {
+    from {
+        background-color: var(--off);
+    }
+    50% {
+        background-color: var(--mid);
+    }
+    to {
+        background-color: var(--on);
+    }
+}
+
+@keyframes handleOff {
+    from {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--on) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 1.125em;
+        width: 1em;
+    }
+    50% {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--mid) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 0.125em;
+        width: 2em;
+    }
+    to {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--off) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 0.125em;
+        width: 1em;
+    }
+}
+
+@keyframes handleOn {
+    from {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--off) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 0.125em;
+        width: 1em;
+    }
+    50% {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--mid) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 0.125em;
+        width: 2em;
+    }
+    to {
+        box-shadow:
+            0 0.175em 0.175em 0 #0001 inset,
+            0 0.375em 0 #0002 inset,
+            0 0.375em 0 var(--on) inset,
+            0 0.475em 0.1em #0001 inset;
+        left: 1.125em;
+        width: 1em;
+    }
 }
 
 /* Utility Classes */

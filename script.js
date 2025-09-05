@@ -39,6 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
+// Dark mode toggle functionality
+document.addEventListener("click", e => {
+    let tar = e.target;
+    if (tar.name == "toggle") {
+        // Toggle dark mode class on body
+        document.body.classList.toggle("dark-mode");
+    }
+});
+
 // ===========================================
 // NAVIGATION SYSTEM
 // ===========================================
