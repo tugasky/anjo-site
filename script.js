@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
         initAnimations();
         loadPortfolioItems();
         initCanvasAnimation();
+        // Set initial button classes based on current mode
+        updateButtonClasses();
 
         console.log('AnJo Crafty static site loaded successfully!');
     }, 100);
@@ -45,8 +47,28 @@ document.addEventListener("click", e => {
     if (tar.name == "toggle") {
         // Toggle dark mode class on body
         document.body.classList.toggle("dark-mode");
+        // Update button classes based on mode
+        updateButtonClasses();
     }
 });
+
+// Function to update button classes based on dark mode
+function updateButtonClasses() {
+    const ctaButtons = document.querySelectorAll('.cta-button');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+
+    ctaButtons.forEach(button => {
+        if (isDarkMode) {
+            // In dark mode, all buttons should be primary
+            button.classList.remove('secondary');
+            button.classList.add('primary');
+        } else {
+            // In light mode, all buttons should be secondary
+            button.classList.remove('primary');
+            button.classList.add('secondary');
+        }
+    });
+}
 
 // ===========================================
 // NAVIGATION SYSTEM
