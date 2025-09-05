@@ -400,102 +400,181 @@ style.textContent = `
 document.head.appendChild(style);
 
 // ===========================================
-// CANVAS ANIMATION
+// CANVAS ANIMATION - Interactive Network
 // ===========================================
 
 function initCanvasAnimation() {
-    var canvas = document.getElementById('demo-canvas');
-    var ctx = canvas.getContext('2d');
-    var stars = [];
-    var numStars = 200;
-    var mouse = {x: 0, y: 0};
+    var width, height, canvas, ctx, points, target, animateHeader = true;
 
-    // Set canvas size
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
+    // Main initialization
+    initHeader();
+    initAnimation();
+    addListeners();
 
-    resizeCanvas();
+    function initHeader() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        target = {x: width/2, y: height/2};
 
-    // Create stars
-    function createStars() {
-        stars = [];
-        for (var i = 0; i < numStars; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                opacity: Math.random() * 0.8 + 0.2,
-                speed: Math.random() * 0.5 + 0.1,
-                twinkleSpeed: Math.random() * 0.02 + 0.01,
-                twinkleOffset: Math.random() * Math.PI * 2
-            });
+        canvas = document.getElementById('demo-canvas');
+        canvas.width = width;
+        canvas.height = height;
+        ctx = canvas.getContext('2d');
+
+        // create points
+        points = [];
+        for(var x = 0; x < width; x = x + width/20) {
+            for(var y = 0; y < height; y = y + height/20) {
+                var px = x + Math.random()*width/20;
+                var py = y + Math.random()*height/20;
+                var p = {x: px, originX: px, y: py, originY: py };
+                points.push(p);
+            }
+        }
+
+        // for each point find the 5 closest points
+        for(var i = 0; i < points.length; i++) {
+            var closest = [];
+            var p1 = points[i];
+            for(var j = 0; j < points.length; j++) {
+                var p2 = points[j]
+                if(!(p1 == p2)) {
+                    var placed = false;
+                    for(var k = 0; k < 5; k++) {
+                        if(!placed) {
+                            if(closest[k] == undefined) {
+                                closest[k] = p2;
+                                placed = true;
+                            }
+                        }
+                    }
+
+                    for(var k = 0; k < 5; k++) {
+                        if(!placed) {
+                            if(getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                                closest[k] = p2;
+                                placed = true;
+                            }
+                        }
+                    }
+                }
+            }
+            p1.closest = closest;
+        }
+
+        // assign a circle to each point
+        for(var i in points) {
+            var c = new Circle(points[i], 2+Math.random()*2, 'rgba(255,255,255,0.3)');
+            points[i].circle = c;
         }
     }
 
-    createStars();
+    // Event handling
+    function addListeners() {
+        if(!('ontouchstart' in window)) {
+            window.addEventListener('mousemove', mouseMove);
+        }
+        window.addEventListener('resize', resize);
+    }
 
-    // Mouse tracking
-    canvas.addEventListener('mousemove', function(e) {
-        var rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-    });
+    function mouseMove(e) {
+        var posx = posy = 0;
+        if (e.pageX || e.pageY) {
+            posx = e.pageX;
+            posy = e.pageY;
+        }
+        else if (e.clientX || e.clientY)    {
+            posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        target.x = posx;
+        target.y = posy;
+    }
 
-    // Animation loop
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        initHeader(); // Reinitialize points on resize
+    }
+
+    // animation
+    function initAnimation() {
+        animate();
+        for(var i in points) {
+            shiftPoint(points[i]);
+        }
+    }
+
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Draw stars
-        stars.forEach(function(star, index) {
-            // Twinkle effect
-            var twinkle = Math.sin(Date.now() * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7;
-
-            // Mouse interaction
-            var dx = mouse.x - star.x;
-            var dy = mouse.y - star.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            var maxDistance = 100;
-
-            if (distance < maxDistance) {
-                var force = (maxDistance - distance) / maxDistance;
-                star.x += (dx / distance) * force * 0.5;
-                star.y += (dy / distance) * force * 0.5;
-                twinkle *= 1.5;
-            }
-
-            // Draw star
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, ' + (star.opacity * twinkle) + ')';
-            ctx.fill();
-
-            // Draw connecting lines to nearby stars
-            stars.slice(index + 1).forEach(function(otherStar) {
-                var dx = otherStar.x - star.x;
-                var dy = otherStar.y - star.y;
-                var distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < 80) {
-                    ctx.beginPath();
-                    ctx.moveTo(star.x, star.y);
-                    ctx.lineTo(otherStar.x, otherStar.y);
-                    ctx.strokeStyle = 'rgba(100, 150, 255, ' + (0.1 * (1 - distance / 80)) + ')';
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
+        if(animateHeader) {
+            ctx.clearRect(0,0,width,height);
+            for(var i in points) {
+                // detect points in range
+                if(Math.abs(getDistance(target, points[i])) < 4000) {
+                    points[i].active = 0.3;
+                    points[i].circle.active = 0.6;
+                } else if(Math.abs(getDistance(target, points[i])) < 20000) {
+                    points[i].active = 0.1;
+                    points[i].circle.active = 0.3;
+                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
+                    points[i].active = 0.02;
+                    points[i].circle.active = 0.1;
+                } else {
+                    points[i].active = 0;
+                    points[i].circle.active = 0;
                 }
-            });
-        });
 
+                drawLines(points[i]);
+                points[i].circle.draw();
+            }
+        }
         requestAnimationFrame(animate);
     }
 
-    // Handle resize
-    window.addEventListener('resize', function() {
-        resizeCanvas();
-        createStars();
-    });
+    function shiftPoint(p) {
+        // Simple animation without TweenLite dependency
+        setTimeout(function() {
+            p.x = p.originX - 50 + Math.random() * 100;
+            p.y = p.originY - 50 + Math.random() * 100;
+            shiftPoint(p);
+        }, 1000 + Math.random() * 1000);
+    }
 
-    animate();
+    // Canvas manipulation
+    function drawLines(p) {
+        if(!p.active) return;
+        for(var i in p.closest) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.closest[i].x, p.closest[i].y);
+            ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
+            ctx.stroke();
+        }
+    }
+
+    function Circle(pos,rad,color) {
+        var _this = this;
+
+        // constructor
+        (function() {
+            _this.pos = pos || null;
+            _this.radius = rad || null;
+            _this.color = color || null;
+        })();
+
+        this.draw = function() {
+            if(!_this.active) return;
+            ctx.beginPath();
+            ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
+            ctx.fill();
+        };
+    }
+
+    // Util
+    function getDistance(p1, p2) {
+        return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+    }
 }
