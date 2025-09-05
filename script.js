@@ -167,7 +167,10 @@ function initNavigation() {
                 hamburgerBtn.classList.remove('active');
             }
 
-            navigateToSection(target);
+            // Small delay to ensure menu closes before navigation
+            setTimeout(() => {
+                navigateToSection(target);
+            }, 50);
         });
     });
 
@@ -207,7 +210,7 @@ window.navigateToSection = function(targetId) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
         console.log('Section not found:', targetId);
-        // If section not found, show home
+        // If section not found, show home as default
         const homeSection = document.getElementById('home');
         if (homeSection) {
             homeSection.style.display = 'block';
