@@ -2,6 +2,193 @@
    ANJO CRAFTY - STATIC SITE STYLES
    =========================================== */
 
+/* Hero Entrance Animations - Step 1 */
+.hero-title {
+    opacity: 0;
+    transform: scale(0.8);
+    animation: bounceIn 1s ease-out 0.5s forwards;
+    position: relative;
+}
+
+.hero-title::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg,
+        rgba(99, 102, 241, 0.3),
+        rgba(139, 92, 246, 0.3),
+        rgba(99, 102, 241, 0.3));
+    border-radius: 12px;
+    filter: blur(20px);
+    opacity: 0;
+    animation: cosmicGlow 3s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+.hero-subtitle {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 1.2s forwards;
+}
+
+.hero-actions .cta-button {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.hero-actions .cta-button:nth-child(1) {
+    animation: bounceInUp 0.8s ease-out 1.5s forwards;
+}
+
+.hero-actions .cta-button:nth-child(2) {
+    animation: bounceInUp 0.8s ease-out 1.7s forwards;
+}
+
+.hero-actions .cta-button:nth-child(3) {
+    animation: bounceInUp 0.8s ease-out 1.9s forwards;
+}
+
+.hero-actions .cta-button:nth-child(4) {
+    animation: bounceInUp 0.8s ease-out 2.1s forwards;
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cosmicGlow {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.97);
+    }
+    100% {
+        opacity: 0.4;
+        transform: scale(1.02);
+    }
+}
+
+/* Hero Floating Button Animations - Step 3 */
+.cta-button {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+.cta-button:nth-child(2) {
+    animation-delay: -2s;
+}
+
+.cta-button:nth-child(3) {
+    animation-delay: -4s;
+}
+
+.cta-button:nth-child(4) {
+    animation-delay: -6s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Hero Shooting Star Hover Effects - Step 4 */
+.cta-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.cta-button:hover::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    animation: shootingStar 0.6s ease-out;
+}
+
+@keyframes shootingStar {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+    }
+    50% {
+        width: 100px;
+        height: 100px;
+        opacity: 0.7;
+    }
+    100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+    }
+}
+
+/* Hero Magnetic Effect Setup - Step 5 */
+.hero-actions {
+    position: relative;
+    overflow: visible;
+}
+
+.hero-title {
+    transition: transform 0.1s ease;
+}
+
 /* CSS Variables */
 :root {
     --primary-color: #6366f1;
@@ -416,17 +603,22 @@ body.dark-mode .header {
 }
 
 .hero-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
     font-weight: 700;
     margin-bottom: 1rem;
     line-height: 1.2;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-    text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-stroke: 1px rgba(255, 255, 255, 0.2);
     text-shadow:
-        0 0 5px rgba(255, 255, 255, 0.5),
-        0 0 10px rgba(255, 255, 255, 0.3),
-        0 0 15px rgba(255, 255, 255, 0.2),
-        0 0 20px rgba(255, 255, 255, 0.1);
+        0 0 8px rgba(255, 255, 255, 0.4),
+        0 0 16px rgba(255, 255, 255, 0.2),
+        0 0 24px rgba(255, 255, 255, 0.1);
 }
 
 .hero-subtitle {
@@ -915,23 +1107,29 @@ body.dark-mode .footer {
         padding: 100px 1rem 2rem;
     }
 
-    .hero-title {
-        font-size: 2.5rem;
-    }
+.hero-title {
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    text-stroke: 1px rgba(255, 255, 255, 0.3);
+    text-shadow:
+        0 0 5px rgba(255, 255, 255, 0.5),
+        0 0 10px rgba(255, 255, 255, 0.3),
+        0 0 15px rgba(255, 255, 255, 0.2),
+        0 0 20px rgba(255, 255, 255, 0.1);
+}
 
-    .hero-subtitle {
-        font-size: 1.1rem;
-    }
+/* Hero title white in light mode (when not in dark mode) */
+body:not(.dark-mode) .hero-title {
+    color: white;
+}
 
-    .hero-actions {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .cta-button {
-        width: 100%;
-        max-width: 300px;
-    }
+/* Hero title dark color in dark mode - REMOVED */
 
     .section-title {
         font-size: 2rem;
@@ -1176,13 +1374,9 @@ input[type=checkbox].pristine {
     transition: var(--transition);
 }
 
-/* Dark Mode Toggle - Fixed position for home page */
+/* Dark Mode Toggle - Hidden on home page */
 body:has(#home.active) input[type=checkbox].pristine {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    z-index: 1000;
-    width: 2.5em;
+    display: none !important;
 }
 
 input[type=checkbox].pristine:before {
@@ -1303,16 +1497,19 @@ input[type=checkbox].pristine:focus {
 
 /* Hero Credit */
 .hero-credit {
-    text-align: center;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-    font-weight: 300;
-    position: absolute;
+    position: fixed;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 300;
     z-index: 4;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.4),
+        0 0 16px rgba(255, 255, 255, 0.2),
+        0 0 24px rgba(255, 255, 255, 0.1);
 }
 
 /* Hamburger Menu Styles */

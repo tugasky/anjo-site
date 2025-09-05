@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initPortfolioFilter();
         initContactForm();
         initAnimations();
+        initHeroAnimations();
         loadPortfolioItems();
         initCanvasAnimation();
         // Set initial button classes based on current mode
@@ -380,41 +381,6 @@ function fallbackContact(message) {
 }
 
 // ===========================================
-// ANIMATIONS
-// ===========================================
-
-function initAnimations() {
-    // Intersection Observer for fade-in animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in');
-            }
-        });
-    }, observerOptions);
-
-    // Observe all sections and cards
-    document.querySelectorAll('section, .service-card, .portfolio-item').forEach(el => {
-        observer.observe(el);
-    });
-
-    // Add initial fade-in class to visible elements
-    setTimeout(() => {
-        document.querySelectorAll('section, .service-card').forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-                el.classList.add('fade-in');
-            }
-        });
-    }, 100);
-}
-
-// ===========================================
 // NOTIFICATION SYSTEM
 // ===========================================
 
@@ -513,6 +479,127 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===========================================
+// HERO ANIMATIONS - Magnetic Buttons & Parallax
+// ===========================================
+
+function initHeroAnimations() {
+    const heroTitle = document.querySelector('.hero-title');
+    const ctaButtons = document.querySelectorAll('.hero-actions .cta-button');
+
+    // Magnetic button effect
+    document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        ctaButtons.forEach(button => {
+            const rect = button.getBoundingClientRect();
+            const buttonX = rect.left + rect.width / 2;
+            const buttonY = rect.top + rect.height / 2;
+
+            const distance = Math.sqrt(
+                Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
+            );
+
+            // Magnetic effect within 100px radius
+            if (distance < 100) {
+                const strength = (100 - distance) / 100;
+                const moveX = (mouseX - buttonX) * strength * 0.3;
+                const moveY = (mouseY - buttonY) * strength * 0.3;
+
+                button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            } else {
+                button.style.transform = '';
+            }
+        });
+
+        // Parallax title effect
+        if (heroTitle) {
+            const rect = heroTitle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const deltaX = (mouseX - centerX) / window.innerWidth;
+            const deltaY = (mouseY - centerY) / window.innerHeight;
+
+            const tiltX = deltaX * 2; // Max 2 degrees tilt
+            const tiltY = deltaY * 2;
+
+            heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
+        }
+    });
+
+    // Reset transforms when mouse leaves
+    document.addEventListener('mouseleave', () => {
+        ctaButtons.forEach(button => {
+            button.style.transform = '';
+        });
+        if (heroTitle) {
+            heroTitle.style.transform = '';
+        }
+    });
+
+    // Enhanced particle effect on button hover
+    ctaButtons.forEach(button => {
+        button.addEventListener('mouseenter', createParticleEffect);
+    });
+}
+
+function createParticleEffect(e) {
+    const button = e.target;
+    const rect = button.getBoundingClientRect();
+
+    // Create multiple particles
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+
+        // Random position around the button
+        const angle = (Math.PI * 2 * i) / 8;
+        const radius = 20 + Math.random() * 30;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+
+        particle.style.cssText = `
+            position: absolute;
+            left: ${rect.left + rect.width / 2 + x - 2}px;
+            top: ${rect.top + rect.height / 2 + y - 2}px;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            animation: particleFloat 1s ease-out forwards;
+        `;
+
+        document.body.appendChild(particle);
+
+        // Remove particle after animation
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 1000);
+    }
+}
+
+// Add particle animation styles
+const particleStyle = document.createElement('style');
+particleStyle.textContent = `
+    @keyframes particleFloat {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+        }
+    }
+`;
+document.head.appendChild(particleStyle);
 
 // ===========================================
 // CANVAS ANIMATION - Interactive Network
