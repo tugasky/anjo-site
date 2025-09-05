@@ -26,6 +26,20 @@ body.dark-mode {
     --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* Section-specific Dark Mode */
+.services.dark-mode,
+.gallery.dark-mode,
+.about.dark-mode,
+.contact.dark-mode {
+    --text-color: #f9fafb;
+    --bg-color: #111827;
+    --section-bg: #1f2937;
+    --border-color: #374151;
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    background: var(--bg-color);
+}
+
 /* Global Reset */
 * {
     margin: 0;
@@ -776,13 +790,45 @@ body.dark-mode .header {
     background: var(--section-bg);
     color: var(--text-color);
     padding: 3rem 0 1rem;
-    margin-top: 5rem;
     border-top: 1px solid var(--border-color);
 }
 
 body.dark-mode .footer {
     background: #0f172a;
     color: #f9fafb;
+}
+
+/* Footer dark mode when sections have dark mode */
+.services.dark-mode ~ footer,
+.gallery.dark-mode ~ footer,
+.about.dark-mode ~ footer,
+.contact.dark-mode ~ footer {
+    background: #0f172a;
+    color: #f9fafb;
+    border-top-color: #374151;
+}
+
+.services.dark-mode ~ footer .footer-brand h3,
+.services.dark-mode ~ footer .footer-links .footer-link,
+.gallery.dark-mode ~ footer .footer-brand h3,
+.gallery.dark-mode ~ footer .footer-links .footer-link,
+.about.dark-mode ~ footer .footer-brand h3,
+.about.dark-mode ~ footer .footer-links .footer-link,
+.contact.dark-mode ~ footer .footer-brand h3,
+.contact.dark-mode ~ footer .footer-links .footer-link {
+    color: #f9fafb;
+}
+
+.services.dark-mode ~ footer .footer-brand p,
+.services.dark-mode ~ footer .footer-bottom,
+.gallery.dark-mode ~ footer .footer-brand p,
+.gallery.dark-mode ~ footer .footer-bottom,
+.about.dark-mode ~ footer .footer-brand p,
+.about.dark-mode ~ footer .footer-bottom,
+.contact.dark-mode ~ footer .footer-brand p,
+.contact.dark-mode ~ footer .footer-bottom {
+    color: #f9fafb;
+    opacity: 0.7;
 }
 
 .footer-content {

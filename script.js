@@ -45,8 +45,14 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener("click", e => {
     let tar = e.target;
     if (tar.name == "toggle") {
-        // Toggle dark mode class on body
-        document.body.classList.toggle("dark-mode");
+        // Toggle dark mode class on specific sections
+        const sections = ['services', 'gallery', 'about', 'contact'];
+        sections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.toggle("dark-mode");
+            }
+        });
         // Update button classes based on mode
         updateButtonClasses();
     }
@@ -55,10 +61,15 @@ document.addEventListener("click", e => {
 // Function to update button classes based on dark mode
 function updateButtonClasses() {
     const ctaButtons = document.querySelectorAll('.cta-button');
-    const isDarkMode = document.body.classList.contains('dark-mode');
+    // Check if any of the target sections have dark mode
+    const targetSections = ['services', 'gallery', 'about', 'contact'];
+    const isAnySectionDark = targetSections.some(sectionId => {
+        const section = document.getElementById(sectionId);
+        return section && section.classList.contains('dark-mode');
+    });
 
     ctaButtons.forEach(button => {
-        if (isDarkMode) {
+        if (isAnySectionDark) {
             // In dark mode, all buttons should be primary
             button.classList.remove('secondary');
             button.classList.add('primary');
