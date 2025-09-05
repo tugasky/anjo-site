@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initNavigation();
         initPortfolioFilter();
         initContactForm();
-        initAnimations();
         initHeroAnimations();
         loadPortfolioItems();
         initCanvasAnimation();
@@ -606,177 +605,209 @@ document.head.appendChild(particleStyle);
 // ===========================================
 
 function initCanvasAnimation() {
-    var width, height, canvas, ctx, points, target, animateHeader = true;
+    (function() {
 
-    // Main initialization
-    initHeader();
-    initAnimation();
-    addListeners();
+        var width, height, canvas, ctx, stars, target, animateHeader = true;
 
-    function initHeader() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        target = {x: width/2, y: height/2};
+        // Main
+        initHeader();
+        initAnimation();
+        addListeners();
 
-        canvas = document.getElementById('demo-canvas');
-        canvas.width = width;
-        canvas.height = height;
-        ctx = canvas.getContext('2d');
+        function initHeader() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            target = {x: width/2, y: height/2};
 
-        // create points
-        points = [];
-        for(var x = 0; x < width; x = x + width/20) {
-            for(var y = 0; y < height; y = y + height/20) {
-                var px = x + Math.random()*width/20;
-                var py = y + Math.random()*height/20;
-                var p = {x: px, originX: px, y: py, originY: py };
-                points.push(p);
+            canvas = document.getElementById('demo-canvas');
+            canvas.width = width;
+            canvas.height = height;
+            ctx = canvas.getContext('2d');
+
+            // create stars
+            stars = [];
+            for(var i = 0; i < 150; i++) { // More stars than before
+                var star = {
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    originX: Math.random() * width,
+                    originY: Math.random() * height,
+                    size: Math.random() * 2 + 0.5,
+                    brightness: Math.random() * 0.8 + 0.2,
+                    twinkle: Math.random() * Math.PI * 2,
+                    speed: Math.random() * 0.02 + 0.01
+                };
+                stars.push(star);
             }
-        }
 
-        // for each point find the 5 closest points
-        for(var i = 0; i < points.length; i++) {
-            var closest = [];
-            var p1 = points[i];
-            for(var j = 0; j < points.length; j++) {
-                var p2 = points[j]
-                if(!(p1 == p2)) {
-                    var placed = false;
-                    for(var k = 0; k < 5; k++) {
-                        if(!placed) {
-                            if(closest[k] == undefined) {
-                                closest[k] = p2;
-                                placed = true;
-                            }
-                        }
-                    }
-
-                    for(var k = 0; k < 5; k++) {
-                        if(!placed) {
-                            if(getDistance(p1, p2) < getDistance(p1, closest[k])) {
-                                closest[k] = p2;
-                                placed = true;
-                            }
+            // Find closest stars for connections
+            for(var i = 0; i < stars.length; i++) {
+                var closest = [];
+                var s1 = stars[i];
+                for(var j = 0; j < stars.length; j++) {
+                    var s2 = stars[j];
+                    if(s1 !== s2) {
+                        var dist = getDistance(s1, s2);
+                        if(dist < 100) { // Connection distance
+                            closest.push({star: s2, distance: dist});
                         }
                     }
                 }
+                // Sort by distance and keep only closest 3
+                closest.sort(function(a, b) { return a.distance - b.distance; });
+                s1.closest = closest.slice(0, 3);
             }
-            p1.closest = closest;
         }
 
-        // assign a circle to each point
-        for(var i in points) {
-            var c = new Circle(points[i], 2+Math.random()*2, 'rgba(255,255,255,0.3)');
-            points[i].circle = c;
+        // Event handling
+        function addListeners() {
+            if(!('ontouchstart' in window)) {
+                window.addEventListener('mousemove', mouseMove);
+            }
+            window.addEventListener('scroll', scrollCheck);
+            window.addEventListener('resize', resize);
         }
-    }
 
-    // Event handling
-    function addListeners() {
-        if(!('ontouchstart' in window)) {
-            window.addEventListener('mousemove', mouseMove);
+        function mouseMove(e) {
+            var posx = posy = 0;
+            if (e.pageX || e.pageY) {
+                posx = e.pageX;
+                posy = e.pageY;
+            }
+            else if (e.clientX || e.clientY) {
+                posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            target.x = posx;
+            target.y = posy;
         }
-        window.addEventListener('resize', resize);
-    }
 
-    function mouseMove(e) {
-        var posx = posy = 0;
-        if (e.pageX || e.pageY) {
-            posx = e.pageX;
-            posy = e.pageY;
+        function scrollCheck() {
+            if(document.body.scrollTop > height) animateHeader = false;
+            else animateHeader = true;
         }
-        else if (e.clientX || e.clientY)    {
-            posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-            posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initHeader(); // Reinitialize stars on resize
         }
-        target.x = posx;
-        target.y = posy;
-    }
 
-    function resize() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        initHeader(); // Reinitialize points on resize
-    }
-
-    // animation
-    function initAnimation() {
-        animate();
-        for(var i in points) {
-            shiftPoint(points[i]);
+        // animation
+        function initAnimation() {
+            animate();
+            for(var i in stars) {
+                shiftStar(stars[i]);
+            }
         }
-    }
 
-    function animate() {
-        if(animateHeader) {
-            ctx.clearRect(0,0,width,height);
-            for(var i in points) {
-                // detect points in range
-                if(Math.abs(getDistance(target, points[i])) < 4000) {
-                    points[i].active = 0.3;
-                    points[i].circle.active = 0.6;
-                } else if(Math.abs(getDistance(target, points[i])) < 20000) {
-                    points[i].active = 0.1;
-                    points[i].circle.active = 0.3;
-                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
-                    points[i].active = 0.02;
-                    points[i].circle.active = 0.1;
-                } else {
-                    points[i].active = 0;
-                    points[i].circle.active = 0;
+        function animate() {
+            if(animateHeader) {
+                ctx.clearRect(0,0,width,height);
+
+                // Update star twinkling
+                for(var i in stars) {
+                    stars[i].twinkle += stars[i].speed;
                 }
 
-                drawLines(points[i]);
-                points[i].circle.draw();
+                for(var i in stars) {
+                    var star = stars[i];
+                    var mouseDist = getDistance(target, star);
+
+                    // Mouse interaction
+                    var mouseInfluence = Math.max(0, 1 - mouseDist / 200); // Influence radius of 200px
+                    star.active = mouseInfluence;
+
+                    // Draw connections to nearby stars
+                    drawConnections(star);
+
+                    // Draw the star
+                    drawStar(star);
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function shiftStar(s) {
+            TweenLite.to(s, 2+2*Math.random(), {
+                x: s.originX - 30 + Math.random() * 60,
+                y: s.originY - 30 + Math.random() * 60,
+                ease: Circ.easeInOut,
+                onComplete: function() {
+                    shiftStar(s);
+                }
+            });
+        }
+
+        // Canvas manipulation
+        function drawConnections(s) {
+            if(s.active > 0) {
+                for(var i in s.closest) {
+                    var connection = s.closest[i];
+                    var otherStar = connection.star;
+                    var dist = connection.distance;
+
+                    // Only draw if both stars are somewhat active
+                    var connectionStrength = (s.active + otherStar.active) / 2;
+                    if(connectionStrength > 0.1) {
+                        ctx.beginPath();
+                        ctx.moveTo(s.x, s.y);
+                        ctx.lineTo(otherStar.x, otherStar.y);
+                        ctx.strokeStyle = 'rgba(156,217,249,' + connectionStrength * 0.5 + ')';
+                        ctx.lineWidth = connectionStrength * 2;
+                        ctx.stroke();
+                    }
+                }
             }
         }
-        requestAnimationFrame(animate);
-    }
 
-    function shiftPoint(p) {
-        // Simple animation without TweenLite dependency
-        setTimeout(function() {
-            p.x = p.originX - 50 + Math.random() * 100;
-            p.y = p.originY - 50 + Math.random() * 100;
-            shiftPoint(p);
-        }, 1000 + Math.random() * 1000);
-    }
+        function drawStar(s) {
+            var twinkleEffect = Math.sin(s.twinkle) * 0.3 + 0.7;
+            var brightness = s.brightness * twinkleEffect * (1 + s.active * 0.5);
 
-    // Canvas manipulation
-    function drawLines(p) {
-        if(!p.active) return;
-        for(var i in p.closest) {
+            ctx.save();
+            ctx.globalAlpha = brightness;
+
+            // Draw star shape
             ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.closest[i].x, p.closest[i].y);
-            ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
-            ctx.stroke();
-        }
-    }
+            var spikes = 5;
+            var outerRadius = s.size * (1 + s.active);
+            var innerRadius = s.size * 0.4 * (1 + s.active);
 
-    function Circle(pos,rad,color) {
-        var _this = this;
+            for(var i = 0; i < spikes * 2; i++) {
+                var angle = (i * Math.PI) / spikes;
+                var radius = i % 2 === 0 ? outerRadius : innerRadius;
+                var x = s.x + Math.cos(angle) * radius;
+                var y = s.y + Math.sin(angle) * radius;
 
-        // constructor
-        (function() {
-            _this.pos = pos || null;
-            _this.radius = rad || null;
-            _this.color = color || null;
-        })();
+                if(i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
 
-        this.draw = function() {
-            if(!_this.active) return;
-            ctx.beginPath();
-            ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
+            // Create gradient for star glow
+            var gradient = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, outerRadius * 2);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, ' + brightness + ')');
+            gradient.addColorStop(0.5, 'rgba(156, 217, 249, ' + brightness * 0.8 + ')');
+            gradient.addColorStop(1, 'rgba(156, 217, 249, 0)');
+
+            ctx.fillStyle = gradient;
             ctx.fill();
-        };
-    }
 
-    // Util
-    function getDistance(p1, p2) {
-        return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
-    }
+            // Add glow effect
+            ctx.shadowColor = 'rgba(156, 217, 249, ' + brightness * 0.5 + ')';
+            ctx.shadowBlur = outerRadius * 3;
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Util
+        function getDistance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+    })();
 }
