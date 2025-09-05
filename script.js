@@ -58,6 +58,20 @@ document.addEventListener("click", e => {
     }
 });
 
+// Light bulb toggle functionality
+function toggleDarkMode() {
+    // Toggle dark mode class on specific sections
+    const sections = ['services', 'gallery', 'about', 'contact'];
+    sections.forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            section.classList.toggle("dark-mode");
+        }
+    });
+    // Update button classes based on mode
+    updateButtonClasses();
+}
+
 // Function to update button classes based on dark mode
 function updateButtonClasses() {
     const ctaButtons = document.querySelectorAll('.cta-button');
@@ -112,6 +126,62 @@ function initNavigation() {
             console.log('Back button clicked, going to:', target);
             navigateToSection(target);
         });
+    });
+
+    // Handle hamburger menu buttons
+    const hamburgerButtons = document.querySelectorAll('.hamburger-btn');
+    console.log('Found hamburger buttons:', hamburgerButtons.length);
+
+    hamburgerButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const menuId = this.id.replace('hamburger-', 'menu-');
+            const menuDropdown = document.getElementById(menuId);
+
+            if (menuDropdown) {
+                // Toggle active class for animation
+                this.classList.toggle('active');
+                menuDropdown.classList.toggle('active');
+            }
+        });
+    });
+
+    // Handle hamburger menu navigation items
+    const menuItems = document.querySelectorAll('.menu-item[data-target]');
+    console.log('Found menu items:', menuItems.length);
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-target');
+            console.log('Menu item clicked, navigating to:', target);
+
+            // Close the menu by removing active classes
+            const menuDropdown = this.closest('.menu-dropdown');
+            const hamburgerBtn = document.querySelector(`#hamburger-${menuDropdown.id.replace('menu-', '')}`);
+
+            if (menuDropdown) {
+                menuDropdown.classList.remove('active');
+            }
+            if (hamburgerBtn) {
+                hamburgerBtn.classList.remove('active');
+            }
+
+            navigateToSection(target);
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.menu-container')) {
+            // Close all menus
+            document.querySelectorAll('.hamburger-btn.active').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.menu-dropdown.active').forEach(menu => {
+                menu.classList.remove('active');
+            });
+        }
     });
 
     console.log('Navigation initialized');
