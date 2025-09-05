@@ -224,25 +224,101 @@ a {
 
 /* Hero Section */
 .hero {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%);
     color: white;
     padding: 120px 2rem 2rem;
     text-align: center;
     position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* Hide all sections except home by default */
-section:not(#home) {
-    display: none;
+/* Canvas Animation */
+#demo-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
 }
 
-/* Show section when active */
-section.active {
-    display: block;
+.hero-content {
+    position: relative;
+    z-index: 2;
 }
+
+/* Animated Background */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+    animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+@keyframes backgroundFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.5;
+    }
+    33% {
+        transform: translateY(-20px) rotate(120deg);
+        opacity: 0.7;
+    }
+    66% {
+        transform: translateY(10px) rotate(240deg);
+        opacity: 0.6;
+    }
+}
+
+/* Floating Particles */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 70% 10%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 30% 90%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 100px 100px, 150px 150px, 200px 200px, 120px 120px, 180px 180px;
+    animation: particleFloat 25s linear infinite;
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(-10px) translateX(10px);
+    }
+    50% {
+        transform: translateY(-20px) translateX(-10px);
+    }
+    75% {
+        transform: translateY(-10px) translateX(-20px);
+    }
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}
+
+/* Section visibility controlled by JavaScript */
+/* Hide footer on homepage - controlled by JavaScript */
 
 .hero-content {
     max-width: 800px;
@@ -258,11 +334,20 @@ section.active {
 
 .hero-subtitle {
     font-size: clamp(1.1rem, 2vw, 1.3rem);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     opacity: 0.9;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.hero-tagline {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-actions {
@@ -633,14 +718,18 @@ section.active {
     flex-wrap: wrap;
 }
 
-.footer-links a {
+.footer-links .footer-link {
+    background: none;
+    border: none;
     color: #9ca3af;
     text-decoration: none;
     font-size: 0.9rem;
+    cursor: pointer;
     transition: var(--transition);
+    padding: 0;
 }
 
-.footer-links a:hover {
+.footer-links .footer-link:hover {
     color: white;
 }
 

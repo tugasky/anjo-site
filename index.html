@@ -32,18 +32,19 @@
     <main>
         <!-- Home Section -->
         <section id="home" class="hero">
+            <canvas id="demo-canvas"></canvas>
             <div class="hero-content">
                 <h1 class="hero-title" data-pt="Bem-vindo ao AnJo Crafty" data-en="Welcome to AnJo Crafty">
                     Bem-vindo ao AnJo Crafty
                 </h1>
-                <p class="hero-subtitle" data-pt="Onde a criatividade encontra a tecnologia. Especializamo-nos em impressão 3D personalizada, designs únicos e dar vida às suas ideias." data-en="Where creativity meets technology. We specialize in custom 3D printing, unique designs, and bringing your ideas to life.">
-                    Onde a criatividade encontra a tecnologia. Especializamo-nos em impressão 3D personalizada, designs únicos e dar vida às suas ideias.
+                <p class="hero-subtitle" data-pt="Onde a imaginação é o limite. Especializamo-nos em impressão 3D personalizada, designs únicos e dar vida às suas ideias." data-en="Where imagination is the limit. We specialize in custom 3D printing, unique designs, and bringing your ideas to life.">
+                    Onde a imaginação é o limite. Especializamo-nos em impressão 3D personalizada, designs únicos e dar vida às suas ideias.
                 </p>
                 <div class="hero-actions">
-                    <button class="cta-button primary nav-btn" data-target="services" data-pt="Serviços" data-en="Services">Serviços</button>
-                    <button class="cta-button secondary nav-btn" data-target="gallery" data-pt="Galeria" data-en="Gallery">Galeria</button>
-                    <button class="cta-button secondary nav-btn" data-target="about" data-pt="Sobre" data-en="About">Sobre</button>
-                    <button class="cta-button secondary nav-btn" data-target="contact" data-pt="Contacto" data-en="Contact">Contacto</button>
+                    <button class="cta-button primary nav-btn" data-target="services" onclick="navigateToSection('services')" data-pt="Serviços" data-en="Services">Serviços</button>
+                    <button class="cta-button secondary nav-btn" data-target="gallery" onclick="navigateToSection('gallery')" data-pt="Galeria" data-en="Gallery">Galeria</button>
+                    <button class="cta-button secondary nav-btn" data-target="about" onclick="navigateToSection('about')" data-pt="Sobre" data-en="About">Sobre</button>
+                    <button class="cta-button secondary nav-btn" data-target="contact" onclick="navigateToSection('contact')" data-pt="Contacto" data-en="Contact">Contacto</button>
                 </div>
             </div>
         </section>
@@ -165,8 +166,6 @@
                 </div>
             </div>
         </section>
-    </main>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -178,9 +177,9 @@
                     </p>
                 </div>
                 <div class="footer-links">
-                    <a href="#services" data-pt="Serviços" data-en="Services">Serviços</a>
-                    <a href="#gallery" data-pt="Galeria" data-en="Gallery">Galeria</a>
-                    <a href="#contact" data-pt="Contacto" data-en="Contact">Contacto</a>
+                    <button class="footer-link" data-target="services" onclick="navigateToSection('services')" data-pt="Serviços" data-en="Services">Serviços</button>
+                    <button class="footer-link" data-target="gallery" onclick="navigateToSection('gallery')" data-pt="Galeria" data-en="Gallery">Galeria</button>
+                    <button class="footer-link" data-target="contact" onclick="navigateToSection('contact')" data-pt="Contacto" data-en="Contact">Contacto</button>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -190,6 +189,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

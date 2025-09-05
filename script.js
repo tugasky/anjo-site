@@ -3,14 +3,40 @@
 // ===========================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all functionality
-    initNavigation();
-    initPortfolioFilter();
-    initContactForm();
-    initAnimations();
-    loadPortfolioItems();
+    console.log('DOM Content Loaded - Starting initialization...');
 
-    console.log('AnJo Crafty static site loaded successfully!');
+    // Ensure home section is active by default
+    const homeSection = document.getElementById('home');
+    if (homeSection) {
+        homeSection.classList.add('active');
+        homeSection.style.display = 'block';
+        console.log('Home section activated');
+    }
+
+    // Ensure other sections are hidden initially
+    document.querySelectorAll('section:not(#home)').forEach(section => {
+        section.style.display = 'none';
+        section.classList.remove('active');
+    });
+
+    // Hide footer on homepage initially
+    const footer = document.querySelector('footer');
+    if (footer) {
+        footer.style.display = 'none';
+        console.log('Footer hidden for homepage');
+    }
+
+    // Initialize all functionality with delays to ensure DOM is ready
+    setTimeout(() => {
+        initNavigation();
+        initPortfolioFilter();
+        initContactForm();
+        initAnimations();
+        loadPortfolioItems();
+        initCanvasAnimation();
+
+        console.log('AnJo Crafty static site loaded successfully!');
+    }, 100);
 });
 
 // ===========================================
@@ -18,37 +44,75 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===========================================
 
 function initNavigation() {
+    console.log('Initializing navigation...');
+
     // Handle navigation buttons
-    document.querySelectorAll('.nav-btn').forEach(button => {
-        button.addEventListener('click', function() {
+    const navButtons = document.querySelectorAll('.nav-btn, .footer-link');
+    console.log('Found nav buttons:', navButtons.length);
+
+    navButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
             const target = this.getAttribute('data-target');
+            console.log('Button clicked, navigating to:', target);
             navigateToSection(target);
         });
     });
 
     // Handle back buttons
-    document.querySelectorAll('.back-btn').forEach(button => {
-        button.addEventListener('click', function() {
+    const backButtons = document.querySelectorAll('.back-btn');
+    console.log('Found back buttons:', backButtons.length);
+
+    backButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
             const target = this.getAttribute('data-target');
+            console.log('Back button clicked, going to:', target);
             navigateToSection(target);
         });
     });
+
+    console.log('Navigation initialized');
 }
 
-function navigateToSection(targetId) {
-    // Hide all sections
+// Make navigateToSection globally available for inline onclick handlers
+window.navigateToSection = function(targetId) {
+    console.log('navigateToSection called with:', targetId);
+
+    // First, ensure all sections are hidden
     document.querySelectorAll('section').forEach(section => {
+        section.style.display = 'none';
         section.classList.remove('active');
     });
 
     // Show target section
     const targetSection = document.getElementById(targetId);
     if (targetSection) {
+        targetSection.style.display = 'block';
         targetSection.classList.add('active');
+        console.log('Section activated:', targetId);
         // Scroll to top for better UX
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        console.log('Section not found:', targetId);
+        // If section not found, show home
+        const homeSection = document.getElementById('home');
+        if (homeSection) {
+            homeSection.style.display = 'block';
+            homeSection.classList.add('active');
+        }
     }
-}
+
+    // Hide/show footer based on current section
+    const footer = document.querySelector('footer');
+    if (targetId === 'home') {
+        footer.style.display = 'none';
+        console.log('Footer hidden');
+    } else {
+        footer.style.display = 'block';
+        console.log('Footer shown');
+    }
+};
 
 // ===========================================
 // PORTFOLIO FILTERING
@@ -334,3 +398,104 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===========================================
+// CANVAS ANIMATION
+// ===========================================
+
+function initCanvasAnimation() {
+    var canvas = document.getElementById('demo-canvas');
+    var ctx = canvas.getContext('2d');
+    var stars = [];
+    var numStars = 200;
+    var mouse = {x: 0, y: 0};
+
+    // Set canvas size
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+
+    // Create stars
+    function createStars() {
+        stars = [];
+        for (var i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5 + 0.5,
+                opacity: Math.random() * 0.8 + 0.2,
+                speed: Math.random() * 0.5 + 0.1,
+                twinkleSpeed: Math.random() * 0.02 + 0.01,
+                twinkleOffset: Math.random() * Math.PI * 2
+            });
+        }
+    }
+
+    createStars();
+
+    // Mouse tracking
+    canvas.addEventListener('mousemove', function(e) {
+        var rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+    });
+
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw stars
+        stars.forEach(function(star, index) {
+            // Twinkle effect
+            var twinkle = Math.sin(Date.now() * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7;
+
+            // Mouse interaction
+            var dx = mouse.x - star.x;
+            var dy = mouse.y - star.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            var maxDistance = 100;
+
+            if (distance < maxDistance) {
+                var force = (maxDistance - distance) / maxDistance;
+                star.x += (dx / distance) * force * 0.5;
+                star.y += (dy / distance) * force * 0.5;
+                twinkle *= 1.5;
+            }
+
+            // Draw star
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + (star.opacity * twinkle) + ')';
+            ctx.fill();
+
+            // Draw connecting lines to nearby stars
+            stars.slice(index + 1).forEach(function(otherStar) {
+                var dx = otherStar.x - star.x;
+                var dy = otherStar.y - star.y;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 80) {
+                    ctx.beginPath();
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(otherStar.x, otherStar.y);
+                    ctx.strokeStyle = 'rgba(100, 150, 255, ' + (0.1 * (1 - distance / 80)) + ')';
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            });
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    // Handle resize
+    window.addEventListener('resize', function() {
+        resizeCanvas();
+        createStars();
+    });
+
+    animate();
+}
