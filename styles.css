@@ -773,10 +773,11 @@ body.dark-mode .header {
 
 /* Footer */
 .footer {
-    background: #1f2937;
-    color: white;
+    background: var(--section-bg);
+    color: var(--text-color);
     padding: 3rem 0 1rem;
     margin-top: 5rem;
+    border-top: 1px solid var(--border-color);
 }
 
 body.dark-mode .footer {
@@ -899,6 +900,21 @@ body.dark-mode .footer {
     .stats {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+    }
+
+    /* Dark Mode Toggle Mobile */
+    input[type=checkbox].pristine {
+        top: 1rem;
+        right: 1rem;
+        width: 2em;
+        height: 1.25em;
+    }
+
+    input[type=checkbox].pristine:before {
+        top: 0.1em;
+        left: 0.1em;
+        width: 0.8em;
+        height: 0.6em;
     }
 }
 
@@ -1087,7 +1103,7 @@ input[type=checkbox].pristine {
         0 -0.5em 0 #0001 inset,
         0 0.1em 0.1em #0001;
     cursor: pointer;
-    position: absolute;
+    position: fixed;
     top: 2rem;
     right: 2rem;
     width: 2.25em;
@@ -1095,8 +1111,9 @@ input[type=checkbox].pristine {
     -webkit-appearance: none;
     appearance: none;
     -webkit-tap-highlight-color: transparent;
-    z-index: 10;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    z-index: 1000;
+    border: 2px solid var(--border-color);
+    transition: var(--transition);
 }
 
 input[type=checkbox].pristine:before {
@@ -1213,6 +1230,20 @@ input[type=checkbox].pristine:focus {
         left: 1.125em;
         width: 1em;
     }
+}
+
+/* Hero Credit */
+.hero-credit {
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    font-weight: 300;
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
 }
 
 /* Utility Classes */
