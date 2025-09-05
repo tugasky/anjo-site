@@ -49,6 +49,7 @@ body.dark-mode {
 
 html {
     scroll-behavior: smooth;
+    height: 100%;
 }
 
 body {
@@ -57,6 +58,7 @@ body {
     color: var(--text-color);
     background: var(--bg-color);
     transition: var(--transition);
+    min-height: 100vh;
 }
 
 /* Typography */
@@ -501,6 +503,9 @@ body.dark-mode .header {
 
 /* Services Section */
 .services {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
     padding: 5rem 0;
     background: var(--section-bg);
 }
@@ -546,6 +551,9 @@ body.dark-mode .header {
 
 /* Gallery Section */
 .gallery {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
     padding: 5rem 0;
     background: var(--bg-color);
 }
@@ -634,6 +642,9 @@ body.dark-mode .header {
 
 /* About Section */
 .about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
     padding: 5rem 0;
     background: var(--section-bg);
 }
@@ -676,6 +687,9 @@ body.dark-mode .header {
 
 /* Contact Section */
 .contact {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
     padding: 5rem 0;
     background: var(--bg-color);
 }
