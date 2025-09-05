@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initHeroAnimations();
         loadPortfolioItems();
         initCanvasAnimation();
-        // Set initial button classes based on current mode
+        // Set initial button classes based on current mode (now dark mode by default)
         updateButtonClasses();
 
         console.log('AnJo Crafty static site loaded successfully!');
