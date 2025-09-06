@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initHeroAnimations(isMobile);
         initCanvasAnimation(isMobile);
         initCTAButton();
+        initIframeResponsive();
         // Set initial button classes based on current mode (now dark mode by default)
         updateButtonClasses();
 
@@ -609,6 +610,97 @@ function initCTAButton() {
 }
 
 
+
+// ===========================================
+// IFRAME RESPONSIVE HANDLING
+// ===========================================
+
+function initIframeResponsive() {
+    const iframe = document.querySelector('.gallery-iframe-container iframe');
+    const container = document.querySelector('.gallery-iframe-container');
+
+    if (!iframe || !container) return;
+
+    // Function to adjust iframe height based on content
+    function adjustIframeHeight() {
+        try {
+            // Try to access iframe content (same-origin only)
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            if (iframeDoc) {
+                const contentHeight = iframeDoc.documentElement.scrollHeight;
+                if (contentHeight > 0) {
+                    iframe.style.height = contentHeight + 'px';
+                    container.style.height = 'auto'; // Let container adjust to iframe
+                }
+            }
+        } catch (e) {
+            // Cross-origin iframe, use fallback method
+            console.log('Cross-origin iframe detected, using fallback height adjustment');
+
+            // Set a reasonable minimum height and let CSS aspect-ratio handle initial sizing
+            const currentHeight = parseInt(iframe.style.height) || 800;
+            const newHeight = Math.max(currentHeight, 600); // Minimum height
+            iframe.style.height = newHeight + 'px';
+        }
+    }
+
+    // Listen for postMessage from iframe (for services like EmbedSocial)
+    function handlePostMessage(event) {
+        // Only accept messages from expected origins
+        const allowedOrigins = [
+            'https://embedsocial.com',
+            'https://www.embedsocial.com'
+        ];
+
+        if (allowedOrigins.includes(event.origin)) {
+            if (event.data && typeof event.data === 'object' && event.data.height) {
+                const newHeight = parseInt(event.data.height);
+                if (newHeight > 0 && newHeight < 5000) { // Reasonable height limits
+                    iframe.style.height = newHeight + 'px';
+                    container.style.height = 'auto';
+                    console.log('Iframe height adjusted to:', newHeight);
+                }
+            }
+        }
+    }
+
+    // Add postMessage listener
+    window.addEventListener('message', handlePostMessage);
+
+    // Initial height adjustment
+    setTimeout(adjustIframeHeight, 1000);
+
+    // Periodic height checks (for dynamic content)
+    const heightCheckInterval = setInterval(adjustIframeHeight, 3000);
+
+    // Clean up interval when navigating away from gallery
+    const gallerySection = document.getElementById('gallery');
+    if (gallerySection) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    if (!gallerySection.classList.contains('active')) {
+                        clearInterval(heightCheckInterval);
+                        window.removeEventListener('message', handlePostMessage);
+                        observer.disconnect();
+                    }
+                }
+            });
+        });
+
+        observer.observe(gallerySection, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+
+    // Adjust height on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(adjustIframeHeight, 250);
+    });
+}
 
 // ===========================================
 // CANVAS ANIMATION - Interactive Network
