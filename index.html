@@ -188,9 +188,6 @@
                         Na AnJo Crafty, acreditamos que cada ideia merece ganhar forma.
                     </p>
                     <p>
-                        O nosso nome nasce da união da Ana e do João, mas também da vontade de ser o "anjo da guarda" das tuas criações em impressão 3D 👼.
-                    </p>
-                    <p>
                         Somos apaixonados por transformar imaginação em objetos reais: desde peças decorativas personalizadas até soluções práticas para o dia a dia. Trabalhamos com dedicação, criatividade e atenção ao detalhe, porque sabemos que cada projeto é único.
                     </p>
                     <p>
@@ -199,14 +196,27 @@
                     <p>
                         Seja para um protótipo, um presente especial ou simplesmente algo diferente, estamos aqui para ajudar a tornar realidade aquilo que só existia na tua cabeça. 🚀
                     </p>
+                    <div class="cta-container">
+                        <button class="cta-button primary cta-trigger" id="ready-button">
+                            <span class="button-text">Preparado?</span>
+                            <div class="loading-bar">
+                                <div class="loading-progress"></div>
+                            </div>
+                            <span class="loading-percentage">0%</span>
+                        </button>
+                    </div>
                     <div class="stats">
                         <div class="stat">
-                            <h3>200+</h3>
+                            <h3 data-target="200">0</h3>
                             <p data-pt="Projectos Criativos" data-en="Creative Projects">Projectos Criativos</p>
                         </div>
                         <div class="stat">
-                            <h3>50+</h3>
+                            <h3 data-target="50">0</h3>
                             <p data-pt="Clientes Satisfeitos" data-en="Happy Customers">Clientes Satisfeitos</p>
+                        </div>
+                        <div class="stat hidden-stat" id="experience-stat" style="display: none;">
+                            <h3 id="experience-number">0</h3>
+                            <p data-pt="Ano de Experiência" data-en="Year of Experience">Ano de Experiência</p>
                         </div>
                     </div>
                 </div>

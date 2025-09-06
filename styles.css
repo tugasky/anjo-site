@@ -724,13 +724,20 @@ body.dark-mode .header {
 }
 
 .cta-button.primary {
-    background: white;
-    color: var(--accent-color);
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* Light mode specific styling for CTA button */
+body:not(.dark-mode) .cta-button.primary {
+    background: #374151; /* Dark grey */
+    border-color: #374151;
 }
 
 .cta-button.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
+    background: rgba(206, 189, 189, 0.84);
+    color: #5f6771;
 }
 
 .cta-button:hover {
@@ -907,6 +914,84 @@ body.dark-mode .header {
     justify-content: flex-start;
     padding: 5rem 0;
     background: var(--section-bg);
+}
+
+/* CTA Container */
+.cta-container {
+    text-align: center;
+    margin: 3rem 0 2rem;
+}
+
+.cta-trigger {
+    position: relative;
+    overflow: hidden;
+    min-width: 160px;
+    transition: var(--transition);
+}
+
+.cta-trigger.loading {
+    pointer-events: none;
+}
+
+.cta-trigger .button-text {
+    display: inline-block;
+    transition: var(--transition);
+    position: relative;
+    z-index: 2;
+}
+
+.cta-trigger.loading .button-text {
+    opacity: 0;
+}
+
+.loading-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: black;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.cta-trigger.loading .loading-percentage {
+    opacity: 1;
+}
+
+.loading-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.cta-trigger.loading .loading-bar {
+    opacity: 1;
+}
+
+.loading-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: var(--accent-color);
+    width: 0%;
+    transition: width 2s ease-in-out;
+    z-index: 1;
+}
+
+.cta-trigger.loading .loading-progress {
+    width: 100%;
 }
 
 .about-content {

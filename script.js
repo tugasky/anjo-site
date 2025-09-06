@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initHeroAnimations();
         loadPortfolioItems();
         initCanvasAnimation();
+        initCTAButton();
         // Set initial button classes based on current mode (now dark mode by default)
         updateButtonClasses();
 
@@ -208,6 +209,14 @@ window.navigateToSection = function(targetId) {
         console.log('Section activated:', targetId);
         // Scroll to top for better UX
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Animate stats if navigating to about section
+        if (targetId === 'about') {
+            setTimeout(() => {
+                animateStats();
+                checkExperienceStat();
+            }, 500); // Small delay to ensure section is visible
+        }
     } else {
         console.log('Section not found:', targetId);
         // If section not found, show home as default
@@ -599,6 +608,103 @@ particleStyle.textContent = `
     }
 `;
 document.head.appendChild(particleStyle);
+
+// ===========================================
+// STATS ANIMATION
+// ===========================================
+
+function animateStats() {
+    const statElements = document.querySelectorAll('.stat h3[data-target]');
+
+    statElements.forEach(element => {
+        const target = parseInt(element.getAttribute('data-target'));
+        const duration = 2000; // 2 seconds
+        const step = target / (duration / 16); // 60fps
+        let current = 0;
+
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                element.textContent = target + '+';
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(current) + '+';
+            }
+        }, 16);
+    });
+}
+
+function checkExperienceStat() {
+    const now = new Date();
+    const targetDate = new Date('2025-12-25');
+
+    if (now >= targetDate) {
+        const experienceStat = document.getElementById('experience-stat');
+        const experienceNumber = document.getElementById('experience-number');
+
+        // Calculate years since 2025
+        const years = now.getFullYear() - 2025;
+
+        if (years >= 1) {
+            experienceNumber.textContent = years + '+';
+            experienceStat.style.display = 'block';
+        }
+    }
+}
+
+// CTA Button Loading Animation
+function initCTAButton() {
+    const ctaButton = document.getElementById('ready-button');
+
+    if (ctaButton) {
+        ctaButton.addEventListener('click', function() {
+            const button = this;
+            const buttonText = button.querySelector('.button-text');
+            const loadingBar = button.querySelector('.loading-bar');
+            const loadingProgress = button.querySelector('.loading-progress');
+            const loadingPercentage = button.querySelector('.loading-percentage');
+
+            // Add loading class to trigger CSS animations
+            button.classList.add('loading');
+
+            // Change text to loading state
+            buttonText.textContent = 'A carregar...';
+
+            // Reset progress bar and percentage
+            loadingProgress.style.width = '0%';
+            loadingPercentage.textContent = '0%';
+
+            // Start loading animation and percentage counter
+            setTimeout(() => {
+                loadingProgress.style.width = '100%';
+
+                // Update percentage counter
+                let percentage = 0;
+                const percentageInterval = setInterval(() => {
+                    percentage += 2; // Increase by 2% every 40ms (reaches 100% in 2 seconds)
+                    if (percentage >= 100) {
+                        percentage = 100;
+                        clearInterval(percentageInterval);
+                    }
+                    loadingPercentage.textContent = percentage + '%';
+                }, 40);
+            }, 50);
+
+            // Navigate to contact section after 2 seconds
+            setTimeout(() => {
+                navigateToSection('contact');
+
+                // Reset button after navigation
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    buttonText.textContent = 'Preparado?';
+                    loadingProgress.style.width = '0%';
+                    loadingPercentage.textContent = '0%';
+                }, 500);
+            }, 2000);
+        });
+    }
+}
 
 // ===========================================
 // CANVAS ANIMATION - Interactive Network
