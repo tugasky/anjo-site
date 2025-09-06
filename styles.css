@@ -1973,6 +1973,72 @@ body.dark-mode .menu-container .light-toggle::before {
     }
 }
 
+/* Performance Mode Optimizations for Mobile */
+.performance-mode .hero-title::before {
+    animation: none; /* Disable cosmic glow effect */
+}
+
+.performance-mode .cta-button {
+    animation: none; /* Disable floating animation */
+}
+
+.performance-mode .cta-button::after {
+    animation: none; /* Disable shooting star effect */
+}
+
+.performance-mode .hero::before {
+    animation: twinkle 8s ease-in-out infinite alternate; /* Slower twinkling */
+}
+
+.performance-mode .hero::after {
+    animation: twinkle-alt 12s ease-in-out infinite; /* Much slower twinkling */
+}
+
+/* Reduce particle effects on mobile */
+.performance-mode .particle {
+    display: none;
+}
+
+/* Simplify button hover effects */
+.performance-mode .cta-button:hover {
+    transform: scale(1.02); /* Reduced scale effect */
+}
+
+/* Reduce iframe loading impact */
+.performance-mode .gallery-iframe-container iframe {
+    loading: lazy;
+}
+
+/* Disable complex animations on mobile */
+.performance-mode .service-card {
+    animation: none;
+}
+
+.performance-mode .stat {
+    animation: none;
+}
+
+/* Reduce shadow complexity on mobile */
+.performance-mode .service-card,
+.performance-mode .contact-form {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Simpler shadow */
+}
+
+/* Optimize text rendering on mobile */
+.performance-mode * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+}
+
+/* Reduce gradient complexity on mobile */
+.performance-mode .hero-title {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 50%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 /* Utility Classes */
 .visually-hidden {
     position: absolute;

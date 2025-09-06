@@ -5,6 +5,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded - Starting initialization...');
 
+    // Mobile performance detection
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                     window.innerWidth <= 768 ||
+                     window.innerHeight <= 600;
+    const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+
+    // Add performance class to body for CSS optimizations
+    if (isMobile || isLowEndDevice) {
+        document.body.classList.add('performance-mode');
+        console.log('Performance mode enabled for mobile/low-end devices');
+    }
+
     // Ensure home section is active by default
     const homeSection = document.getElementById('home');
     if (homeSection) {
@@ -30,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         initNavigation();
         initContactForm();
-        initHeroAnimations();
-        initCanvasAnimation();
+        initHeroAnimations(isMobile);
+        initCanvasAnimation(isMobile);
         initCTAButton();
         // Set initial button classes based on current mode (now dark mode by default)
         updateButtonClasses();
@@ -380,66 +392,79 @@ document.head.appendChild(style);
 // HERO ANIMATIONS - Magnetic Buttons & Parallax
 // ===========================================
 
-function initHeroAnimations() {
+function initHeroAnimations(isMobile = false) {
     const heroTitle = document.querySelector('.hero-title');
     const ctaButtons = document.querySelectorAll('.hero-actions .cta-button');
 
-    // Magnetic button effect
-    document.addEventListener('mousemove', (e) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+    // Skip magnetic effects on mobile for performance
+    if (!isMobile) {
+        // Magnetic button effect - only on desktop
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
 
-        ctaButtons.forEach(button => {
-            const rect = button.getBoundingClientRect();
-            const buttonX = rect.left + rect.width / 2;
-            const buttonY = rect.top + rect.height / 2;
+            ctaButtons.forEach(button => {
+                const rect = button.getBoundingClientRect();
+                const buttonX = rect.left + rect.width / 2;
+                const buttonY = rect.top + rect.height / 2;
 
-            const distance = Math.sqrt(
-                Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
-            );
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
+                );
 
-            // Magnetic effect within 100px radius
-            if (distance < 100) {
-                const strength = (100 - distance) / 100;
-                const moveX = (mouseX - buttonX) * strength * 0.3;
-                const moveY = (mouseY - buttonY) * strength * 0.3;
+                // Magnetic effect within 100px radius
+                if (distance < 100) {
+                    const strength = (100 - distance) / 100;
+                    const moveX = (mouseX - buttonX) * strength * 0.3;
+                    const moveY = (mouseY - buttonY) * strength * 0.3;
 
-                button.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            } else {
-                button.style.transform = '';
+                    button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                } else {
+                    button.style.transform = '';
+                }
+            });
+
+            // Parallax title effect
+            if (heroTitle) {
+                const rect = heroTitle.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                const deltaX = (mouseX - centerX) / window.innerWidth;
+                const deltaY = (mouseY - centerY) / window.innerHeight;
+
+                const tiltX = deltaX * 2; // Max 2 degrees tilt
+                const tiltY = deltaY * 2;
+
+                heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
             }
         });
 
-        // Parallax title effect
-        if (heroTitle) {
-            const rect = heroTitle.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const deltaX = (mouseX - centerX) / window.innerWidth;
-            const deltaY = (mouseY - centerY) / window.innerHeight;
-
-            const tiltX = deltaX * 2; // Max 2 degrees tilt
-            const tiltY = deltaY * 2;
-
-            heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
-        }
-    });
-
-    // Reset transforms when mouse leaves
-    document.addEventListener('mouseleave', () => {
-        ctaButtons.forEach(button => {
-            button.style.transform = '';
+        // Reset transforms when mouse leaves
+        document.addEventListener('mouseleave', () => {
+            ctaButtons.forEach(button => {
+                button.style.transform = '';
+            });
+            if (heroTitle) {
+                heroTitle.style.transform = '';
+            }
         });
-        if (heroTitle) {
-            heroTitle.style.transform = '';
-        }
-    });
 
-    // Enhanced particle effect on button hover
-    ctaButtons.forEach(button => {
-        button.addEventListener('mouseenter', createParticleEffect);
-    });
+        // Enhanced particle effect on button hover - only on desktop
+        ctaButtons.forEach(button => {
+            button.addEventListener('mouseenter', createParticleEffect);
+        });
+    } else {
+        // Mobile: simpler hover effects without particles
+        ctaButtons.forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.style.transform = 'scale(0.98)';
+            });
+            button.addEventListener('touchend', () => {
+                button.style.transform = '';
+            });
+        });
+    }
 }
 
 function createParticleEffect(e) {
@@ -600,10 +625,12 @@ function initCTAButton() {
 // CANVAS ANIMATION - Interactive Network
 // ===========================================
 
-function initCanvasAnimation() {
+function initCanvasAnimation(isMobile = false) {
     (function() {
 
         var width, height, canvas, ctx, stars, target, animateHeader = true;
+        var lastFrameTime = 0;
+        var frameInterval = isMobile ? 32 : 16; // 30fps on mobile, 60fps on desktop
 
         // Main
         initHeader();
@@ -620,9 +647,12 @@ function initCanvasAnimation() {
             canvas.height = height;
             ctx = canvas.getContext('2d');
 
+            // Reduce stars on mobile for performance
+            var starCount = isMobile ? 50 : 150; // 50 stars on mobile, 150 on desktop
+
             // create stars
             stars = [];
-            for(var i = 0; i < 150; i++) { // More stars than before
+            for(var i = 0; i < starCount; i++) {
                 var star = {
                     x: Math.random() * width,
                     y: Math.random() * height,
@@ -631,27 +661,29 @@ function initCanvasAnimation() {
                     size: Math.random() * 2 + 0.5,
                     brightness: Math.random() * 0.8 + 0.2,
                     twinkle: Math.random() * Math.PI * 2,
-                    speed: Math.random() * 0.02 + 0.01
+                    speed: isMobile ? Math.random() * 0.01 + 0.005 : Math.random() * 0.02 + 0.01 // Slower twinkling on mobile
                 };
                 stars.push(star);
             }
 
-            // Find closest stars for connections
-            for(var i = 0; i < stars.length; i++) {
-                var closest = [];
-                var s1 = stars[i];
-                for(var j = 0; j < stars.length; j++) {
-                    var s2 = stars[j];
-                    if(s1 !== s2) {
-                        var dist = getDistance(s1, s2);
-                        if(dist < 100) { // Connection distance
-                            closest.push({star: s2, distance: dist});
+            // Find closest stars for connections (skip on mobile for performance)
+            if (!isMobile) {
+                for(var i = 0; i < stars.length; i++) {
+                    var closest = [];
+                    var s1 = stars[i];
+                    for(var j = 0; j < stars.length; j++) {
+                        var s2 = stars[j];
+                        if(s1 !== s2) {
+                            var dist = getDistance(s1, s2);
+                            if(dist < 100) { // Connection distance
+                                closest.push({star: s2, distance: dist});
+                            }
                         }
                     }
+                    // Sort by distance and keep only closest 3
+                    closest.sort(function(a, b) { return a.distance - b.distance; });
+                    s1.closest = closest.slice(0, 3);
                 }
-                // Sort by distance and keep only closest 3
-                closest.sort(function(a, b) { return a.distance - b.distance; });
-                s1.closest = closest.slice(0, 3);
             }
         }
 
@@ -694,33 +726,43 @@ function initCanvasAnimation() {
         // animation
         function initAnimation() {
             animate();
-            for(var i in stars) {
-                shiftStar(stars[i]);
+            // Reduce star movement on mobile
+            if (!isMobile) {
+                for(var i in stars) {
+                    shiftStar(stars[i]);
+                }
             }
         }
 
-        function animate() {
+        function animate(currentTime) {
             if(animateHeader) {
-                ctx.clearRect(0,0,width,height);
+                // Throttle frame rate on mobile
+                if (currentTime - lastFrameTime >= frameInterval) {
+                    ctx.clearRect(0,0,width,height);
 
-                // Update star twinkling
-                for(var i in stars) {
-                    stars[i].twinkle += stars[i].speed;
-                }
+                    // Update star twinkling
+                    for(var i in stars) {
+                        stars[i].twinkle += stars[i].speed;
+                    }
 
-                for(var i in stars) {
-                    var star = stars[i];
-                    var mouseDist = getDistance(target, star);
+                    for(var i in stars) {
+                        var star = stars[i];
+                        var mouseDist = getDistance(target, star);
 
-                    // Mouse interaction
-                    var mouseInfluence = Math.max(0, 1 - mouseDist / 200); // Influence radius of 200px
-                    star.active = mouseInfluence;
+                        // Mouse interaction (reduced on mobile)
+                        var mouseInfluence = Math.max(0, 1 - mouseDist / (isMobile ? 100 : 200)); // Smaller influence radius on mobile
+                        star.active = mouseInfluence;
 
-                    // Draw connections to nearby stars
-                    drawConnections(star);
+                        // Draw connections to nearby stars (skip on mobile)
+                        if (!isMobile) {
+                            drawConnections(star);
+                        }
 
-                    // Draw the star
-                    drawStar(star);
+                        // Draw the star
+                        drawStar(star);
+                    }
+
+                    lastFrameTime = currentTime;
                 }
             }
             requestAnimationFrame(animate);
@@ -792,10 +834,12 @@ function initCanvasAnimation() {
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Add glow effect
-            ctx.shadowColor = 'rgba(156, 217, 249, ' + brightness * 0.5 + ')';
-            ctx.shadowBlur = outerRadius * 3;
-            ctx.fill();
+            // Add glow effect (reduced on mobile)
+            if (!isMobile) {
+                ctx.shadowColor = 'rgba(156, 217, 249, ' + brightness * 0.5 + ')';
+                ctx.shadowBlur = outerRadius * 3;
+                ctx.fill();
+            }
 
             ctx.restore();
         }
