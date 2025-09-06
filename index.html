@@ -26,11 +26,9 @@
     <meta property="og:type" content="website">
 </head>
 <body>
-    <!-- Skip to main content link for accessibility -->
-    <a href="#main-content" class="skip-link">Saltar para conteúdo principal</a>
 
-    <!-- Dark Mode Toggle -->
-    <input class="pristine" type="checkbox" name="toggle" value="on">
+
+
 
     <!-- Main Content -->
     <main id="main-content">
@@ -79,21 +77,14 @@
         <!-- Services Section -->
         <section id="services" class="services dark-mode">
             <div class="container">
-                <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-services" aria-label="Abrir menu de navegação" aria-expanded="false">
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                    </button>
-                    <div class="menu-dropdown" id="menu-services">
-                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
-                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
-                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
-                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
-                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
-                    </div>
+                <nav class="mobile-nav">
+                    <a href="#home" class="nav-link" data-target="home">Início</a>
+                    <a href="#about" class="nav-link" data-target="about">Sobre nós</a>
+                    <a href="#services" class="nav-link" data-target="services">Serviços</a>
+                    <a href="#gallery" class="nav-link" data-target="gallery">Galeria</a>
+                    <a href="#contact" class="nav-link" data-target="contact">Contacto</a>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
-                </div>
+                </nav>
                 <h2 class="section-title" data-pt="Os Nossos Serviços" data-en="Our Services">
                     Os Nossos Serviços
                 </h2>
@@ -131,21 +122,14 @@
         <!-- Gallery Section -->
         <section id="gallery" class="gallery dark-mode">
             <div class="container">
-                <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-gallery" aria-label="Abrir menu de navegação" aria-expanded="false">
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                    </button>
-                    <div class="menu-dropdown" id="menu-gallery">
-                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
-                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
-                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
-                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
-                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
-                    </div>
+                <nav class="mobile-nav">
+                    <a href="#home" class="nav-link" data-target="home">Início</a>
+                    <a href="#about" class="nav-link" data-target="about">Sobre nós</a>
+                    <a href="#services" class="nav-link" data-target="services">Serviços</a>
+                    <a href="#gallery" class="nav-link" data-target="gallery">Galeria</a>
+                    <a href="#contact" class="nav-link" data-target="contact">Contacto</a>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
-                </div>
+                </nav>
                 <h2 class="section-title" data-pt="A Nossa Galeria" data-en="Our Gallery">
                     A Nossa Galeria
                 </h2>
@@ -162,21 +146,14 @@
         <!-- About Section -->
         <section id="about" class="about dark-mode">
             <div class="container">
-                <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-about" aria-label="Abrir menu de navegação" aria-expanded="false">
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                    </button>
-                    <div class="menu-dropdown" id="menu-about">
-                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
-                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
-                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
-                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
-                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
-                    </div>
+                <nav class="mobile-nav">
+                    <a href="#home" class="nav-link" data-target="home">Início</a>
+                    <a href="#about" class="nav-link" data-target="about">Sobre nós</a>
+                    <a href="#services" class="nav-link" data-target="services">Serviços</a>
+                    <a href="#gallery" class="nav-link" data-target="gallery">Galeria</a>
+                    <a href="#contact" class="nav-link" data-target="contact">Contacto</a>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
-                </div>
+                </nav>
                 <h2 class="section-title" data-pt="Sobre o AnJo Crafty" data-en="About AnJo Crafty">
                     Sobre o AnJo Crafty
                 </h2>
@@ -223,21 +200,14 @@
         <!-- Contact Section -->
         <section id="contact" class="contact dark-mode">
             <div class="container">
-                <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-contact" aria-label="Abrir menu de navegação" aria-expanded="false">
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                        <div class="hamburger-line"></div>
-                    </button>
-                    <div class="menu-dropdown" id="menu-contact">
-                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
-                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
-                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
-                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
-                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
-                    </div>
+                <nav class="mobile-nav">
+                    <a href="#home" class="nav-link" data-target="home">Início</a>
+                    <a href="#about" class="nav-link" data-target="about">Sobre nós</a>
+                    <a href="#services" class="nav-link" data-target="services">Serviços</a>
+                    <a href="#gallery" class="nav-link" data-target="gallery">Galeria</a>
+                    <a href="#contact" class="nav-link" data-target="contact">Contacto</a>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
-                </div>
+                </nav>
                 <h2 class="section-title" data-pt="Vamos Criar Algo Incrível" data-en="Let's Create Something Amazing">
                     Vamos Criar Algo Incrível
                 </h2>

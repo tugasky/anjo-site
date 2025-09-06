@@ -113,6 +113,20 @@ function updateButtonClasses() {
 function initNavigation() {
     console.log('Initializing navigation...');
 
+    // Throttle function for performance
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        }
+    }
+
     // Handle navigation buttons
     const navButtons = document.querySelectorAll('.nav-btn, .footer-link');
     console.log('Found nav buttons:', navButtons.length);
@@ -123,7 +137,7 @@ function initNavigation() {
             const target = this.getAttribute('data-target');
             console.log('Button clicked, navigating to:', target);
             navigateToSection(target);
-        });
+        }, { passive: true });
     });
 
     // Handle back buttons
@@ -136,62 +150,24 @@ function initNavigation() {
             const target = this.getAttribute('data-target');
             console.log('Back button clicked, going to:', target);
             navigateToSection(target);
-        });
+        }, { passive: true });
     });
 
-    // Handle hamburger menu buttons
-    const hamburgerButtons = document.querySelectorAll('.hamburger-btn');
-    console.log('Found hamburger buttons:', hamburgerButtons.length);
+    // Handle mobile navigation links
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
+    console.log('Found mobile nav links:', mobileNavLinks.length);
 
-    hamburgerButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const menuId = this.id.replace('hamburger-', 'menu-');
-            const menuDropdown = document.getElementById(menuId);
-
-            if (menuDropdown) {
-                // Toggle active class for animation
-                this.classList.toggle('active');
-                menuDropdown.classList.toggle('active');
-
-                // Update aria-expanded attribute
-                const isExpanded = this.classList.contains('active');
-                this.setAttribute('aria-expanded', isExpanded.toString());
-            }
-        });
-    });
-
-    // Handle hamburger menu navigation items
-    const menuItems = document.querySelectorAll('.menu-item[data-target]');
-    console.log('Found menu items:', menuItems.length);
-
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
             const target = this.getAttribute('data-target');
-            console.log('Menu item clicked, navigating to:', target);
-
-            // Close the menu by removing active classes
-            const menuDropdown = this.closest('.menu-dropdown');
-            const hamburgerBtn = document.querySelector(`#hamburger-${menuDropdown.id.replace('menu-', '')}`);
-
-            if (menuDropdown) {
-                menuDropdown.classList.remove('active');
-            }
-            if (hamburgerBtn) {
-                hamburgerBtn.classList.remove('active');
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
-            }
-
-            // Small delay to ensure menu closes before navigation
-            setTimeout(() => {
-                navigateToSection(target);
-            }, 50);
-        });
+            console.log('Mobile nav link clicked, navigating to:', target);
+            navigateToSection(target);
+        }, { passive: true });
     });
 
-    // Close menu when clicking outside
-    document.addEventListener('click', function(e) {
+    // Close menu when clicking outside - throttled for performance
+    const throttledCloseMenu = throttle(function(e) {
         if (!e.target.closest('.menu-container')) {
             // Close all menus
             document.querySelectorAll('.hamburger-btn.active').forEach(btn => {
@@ -202,7 +178,9 @@ function initNavigation() {
                 menu.classList.remove('active');
             });
         }
-    });
+    }, 100);
+
+    document.addEventListener('click', throttledCloseMenu, { passive: true });
 
     console.log('Navigation initialized');
 }
@@ -398,47 +376,57 @@ function initHeroAnimations(isMobile = false) {
 
     // Skip magnetic effects on mobile for performance
     if (!isMobile) {
-        // Magnetic button effect - only on desktop
-        document.addEventListener('mousemove', (e) => {
-            const mouseX = e.clientX;
-            const mouseY = e.clientY;
+        // Throttle mousemove for better performance
+        let mouseThrottleTimeout;
+        const throttledMouseMove = (e) => {
+            if (mouseThrottleTimeout) return;
 
-            ctaButtons.forEach(button => {
-                const rect = button.getBoundingClientRect();
-                const buttonX = rect.left + rect.width / 2;
-                const buttonY = rect.top + rect.height / 2;
+            mouseThrottleTimeout = setTimeout(() => {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
 
-                const distance = Math.sqrt(
-                    Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
-                );
+                ctaButtons.forEach(button => {
+                    const rect = button.getBoundingClientRect();
+                    const buttonX = rect.left + rect.width / 2;
+                    const buttonY = rect.top + rect.height / 2;
 
-                // Magnetic effect within 100px radius
-                if (distance < 100) {
-                    const strength = (100 - distance) / 100;
-                    const moveX = (mouseX - buttonX) * strength * 0.3;
-                    const moveY = (mouseY - buttonY) * strength * 0.3;
+                    const distance = Math.sqrt(
+                        Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
+                    );
 
-                    button.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                } else {
-                    button.style.transform = '';
+                    // Magnetic effect within 100px radius
+                    if (distance < 100) {
+                        const strength = (100 - distance) / 100;
+                        const moveX = (mouseX - buttonX) * strength * 0.3;
+                        const moveY = (mouseY - buttonY) * strength * 0.3;
+
+                        button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    } else {
+                        button.style.transform = '';
+                    }
+                });
+
+                // Parallax title effect
+                if (heroTitle) {
+                    const rect = heroTitle.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+
+                    const deltaX = (mouseX - centerX) / window.innerWidth;
+                    const deltaY = (mouseY - centerY) / window.innerHeight;
+
+                    const tiltX = deltaX * 2; // Max 2 degrees tilt
+                    const tiltY = deltaY * 2;
+
+                    heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
                 }
-            });
 
-            // Parallax title effect
-            if (heroTitle) {
-                const rect = heroTitle.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
+                mouseThrottleTimeout = null;
+            }, 16); // ~60fps throttling
+        };
 
-                const deltaX = (mouseX - centerX) / window.innerWidth;
-                const deltaY = (mouseY - centerY) / window.innerHeight;
-
-                const tiltX = deltaX * 2; // Max 2 degrees tilt
-                const tiltY = deltaY * 2;
-
-                heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
-            }
-        });
+        // Magnetic button effect - only on desktop with throttling
+        document.addEventListener('mousemove', throttledMouseMove, { passive: true });
 
         // Reset transforms when mouse leaves
         document.addEventListener('mouseleave', () => {
@@ -448,21 +436,21 @@ function initHeroAnimations(isMobile = false) {
             if (heroTitle) {
                 heroTitle.style.transform = '';
             }
-        });
+        }, { passive: true });
 
         // Enhanced particle effect on button hover - only on desktop
         ctaButtons.forEach(button => {
-            button.addEventListener('mouseenter', createParticleEffect);
+            button.addEventListener('mouseenter', createParticleEffect, { passive: true });
         });
     } else {
         // Mobile: simpler hover effects without particles
         ctaButtons.forEach(button => {
             button.addEventListener('touchstart', () => {
                 button.style.transform = 'scale(0.98)';
-            });
+            }, { passive: true });
             button.addEventListener('touchend', () => {
                 button.style.transform = '';
-            });
+            }, { passive: true });
         });
     }
 }
@@ -528,11 +516,12 @@ document.head.appendChild(particleStyle);
 
 function animateStats() {
     const statElements = document.querySelectorAll('.stat h3[data-target]');
+    const isMobile = document.body.classList.contains('performance-mode');
 
     statElements.forEach(element => {
         const target = parseInt(element.getAttribute('data-target'));
-        const duration = 2000; // 2 seconds
-        const step = target / (duration / 16); // 60fps
+        const duration = isMobile ? 1000 : 2000; // Faster animation on mobile
+        const step = target / (duration / (isMobile ? 32 : 16)); // Lower fps on mobile
         let current = 0;
 
         const timer = setInterval(() => {
@@ -543,7 +532,7 @@ function animateStats() {
             } else {
                 element.textContent = Math.floor(current) + '+';
             }
-        }, 16);
+        }, isMobile ? 32 : 16);
     });
 }
 
@@ -726,9 +715,10 @@ function initCanvasAnimation(isMobile = false) {
         // animation
         function initAnimation() {
             animate();
-            // Reduce star movement on mobile
+            // Reduce star movement on mobile - only animate subset of stars
             if (!isMobile) {
-                for(var i in stars) {
+                // Only animate every other star on desktop for better performance
+                for(var i = 0; i < stars.length; i += 2) {
                     shiftStar(stars[i]);
                 }
             }
