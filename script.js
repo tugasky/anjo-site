@@ -363,21 +363,21 @@ function initContactForm() {
             const email = formData.get('email');
             const message = formData.get('message');
 
-            // Create formatted message
-            const formattedMessage = `Olá! Sou ${name} (${email})\n\nMensagem:\n${message}`;
+            // Create email subject and body
+            const subject = encodeURIComponent(`Mensagem de ${name} - AnJo Crafty`);
+            const body = encodeURIComponent(`Olá!\n\nNome: ${name}\nEmail: ${email}\n\nMensagem:\n${message}\n\nAtenciosamente,\n${name}`);
 
-            // Copy to clipboard and open Instagram
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(formattedMessage).then(() => {
-                    window.open('https://www.instagram.com/anjocrafty/', '_blank');
-                    showNotification('Mensagem copiada! Instagram aberto.', 'success');
-                    this.reset();
-                }).catch(() => {
-                    fallbackContact(formattedMessage);
-                });
-            } else {
-                fallbackContact(formattedMessage);
-            }
+            // Create mailto link
+            const mailtoLink = `mailto:anjocrafty@gmail.com?subject=${subject}&body=${body}`;
+
+            // Open email client
+            window.location.href = mailtoLink;
+
+            // Show notification
+            showNotification('Email client aberto com sua mensagem!', 'success');
+
+            // Reset form
+            this.reset();
         });
     }
 }
