@@ -26,13 +26,14 @@
     <meta property="og:type" content="website">
 </head>
 <body>
-
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Saltar para conteúdo principal</a>
 
     <!-- Dark Mode Toggle -->
     <input class="pristine" type="checkbox" name="toggle" value="on">
 
     <!-- Main Content -->
-    <main>
+    <main id="main-content">
         <!-- Home Section -->
         <section id="home" class="hero">
             <canvas id="demo-canvas"></canvas>
@@ -79,17 +80,17 @@
         <section id="services" class="services dark-mode">
             <div class="container">
                 <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-services">
+                    <button class="hamburger-btn" id="hamburger-services" aria-label="Abrir menu de navegação" aria-expanded="false">
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                     </button>
                     <div class="menu-dropdown" id="menu-services">
-                        <div class="menu-item" data-target="home">Início</div>
-                        <div class="menu-item" data-target="about">Sobre nós</div>
-                        <div class="menu-item" data-target="services">Serviços</div>
-                        <div class="menu-item" data-target="gallery">Galeria</div>
-                        <div class="menu-item" data-target="contact">Contacto</div>
+                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
+                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
+                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
+                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
+                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
                     </div>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
                 </div>
@@ -98,21 +99,21 @@
                 </h2>
                 <div class="services-grid">
                     <div class="service-card">
-                        <div class="service-icon">🎨</div>
+                        <div class="service-icon" aria-label="Ícone de design personalizado">🎨</div>
                         <h3 data-pt="Designs Personalizados" data-en="Custom Designs">Designs Personalizados</h3>
                         <p data-pt="Conceção e modelagem digital, criados especialmente para ti." data-en="Digital conception and modeling, created especially for you.">
                             Conceção e modelagem digital, criados especialmente para ti.
                         </p>
                     </div>
                     <div class="service-card">
-                        <div class="service-icon">🖨️</div>
+                        <div class="service-icon" aria-label="Ícone de impressão 3D">🖨️</div>
                         <h3 data-pt="Impressão 3D" data-en="3D Printing">Impressão 3D</h3>
                         <p data-pt="Modelos fiéis, materiais de qualidade e acabamentos cuidadosos." data-en="Faithful models, quality materials and careful finishes.">
                             Modelos fiéis, materiais de qualidade e acabamentos cuidadosos.
                         </p>
                     </div>
                     <div class="service-card">
-                        <div class="service-icon">🎭</div>
+                        <div class="service-icon" aria-label="Ícone de cosplay e acessórios">🎭</div>
                         <h3 data-pt="Cosplay & Acessórios" data-en="Cosplay & Accessories">Cosplay & Acessórios</h3>
                         <p data-pt="Peças detalhadas que dão vida a personagens e fantasias." data-en="Detailed pieces that bring characters and fantasies to life.">
                             Peças detalhadas que dão vida a personagens e fantasias.
@@ -131,17 +132,17 @@
         <section id="gallery" class="gallery dark-mode">
             <div class="container">
                 <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-gallery">
+                    <button class="hamburger-btn" id="hamburger-gallery" aria-label="Abrir menu de navegação" aria-expanded="false">
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                     </button>
                     <div class="menu-dropdown" id="menu-gallery">
-                        <div class="menu-item" data-target="home">Início</div>
-                        <div class="menu-item" data-target="about">Sobre nós</div>
-                        <div class="menu-item" data-target="services">Serviços</div>
-                        <div class="menu-item" data-target="gallery">Galeria</div>
-                        <div class="menu-item" data-target="contact">Contacto</div>
+                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
+                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
+                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
+                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
+                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
                     </div>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
                 </div>
@@ -160,17 +161,17 @@
         <section id="about" class="about dark-mode">
             <div class="container">
                 <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-about">
+                    <button class="hamburger-btn" id="hamburger-about" aria-label="Abrir menu de navegação" aria-expanded="false">
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                     </button>
                     <div class="menu-dropdown" id="menu-about">
-                        <div class="menu-item" data-target="home">Início</div>
-                        <div class="menu-item" data-target="about">Sobre nós</div>
-                        <div class="menu-item" data-target="services">Serviços</div>
-                        <div class="menu-item" data-target="gallery">Galeria</div>
-                        <div class="menu-item" data-target="contact">Contacto</div>
+                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
+                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
+                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
+                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
+                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
                     </div>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
                 </div>
@@ -221,17 +222,17 @@
         <section id="contact" class="contact dark-mode">
             <div class="container">
                 <div class="menu-container">
-                    <button class="hamburger-btn" id="hamburger-contact">
+                    <button class="hamburger-btn" id="hamburger-contact" aria-label="Abrir menu de navegação" aria-expanded="false">
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                         <div class="hamburger-line"></div>
                     </button>
                     <div class="menu-dropdown" id="menu-contact">
-                        <div class="menu-item" data-target="home">Início</div>
-                        <div class="menu-item" data-target="about">Sobre nós</div>
-                        <div class="menu-item" data-target="services">Serviços</div>
-                        <div class="menu-item" data-target="gallery">Galeria</div>
-                        <div class="menu-item" data-target="contact">Contacto</div>
+                        <div class="menu-item" data-target="home" aria-label="Navegar para Início">Início</div>
+                        <div class="menu-item" data-target="about" aria-label="Navegar para Sobre nós">Sobre nós</div>
+                        <div class="menu-item" data-target="services" aria-label="Navegar para Serviços">Serviços</div>
+                        <div class="menu-item" data-target="gallery" aria-label="Navegar para Galeria">Galeria</div>
+                        <div class="menu-item" data-target="contact" aria-label="Navegar para Contacto">Contacto</div>
                     </div>
                     <button class="light-toggle" onclick="toggleDarkMode()"></button>
                 </div>
@@ -245,9 +246,9 @@
                     <div class="contact-info">
                         <h3 data-pt="Entre em Contacto" data-en="Get In Touch">Entre em Contacto</h3>
                         <div class="social-links">
-                            <a href="mailto:anjocrafty@gmail.com" class="social-link">🖨️ Email</a>
-                            <a href="https://www.instagram.com/anjocrafty/" target="_blank" class="social-link">📷 Instagram</a>
-                            <a href="https://www.facebook.com/profile.php?id=61577704097029" target="_blank" class="social-link">📘 Facebook</a>
+                            <a href="mailto:anjocrafty@gmail.com" class="social-link" aria-label="Enviar email para AnJo Crafty">🖨️ Email</a>
+                            <a href="https://www.instagram.com/anjocrafty/" target="_blank" class="social-link" aria-label="Seguir AnJo Crafty no Instagram">📷 Instagram</a>
+                            <a href="https://www.facebook.com/profile.php?id=61577704097029" target="_blank" class="social-link" aria-label="Visitar página do AnJo Crafty no Facebook">📘 Facebook</a>
                         </div>
                         <p class="contact-cta">
                             Pronto para começar o teu projeto? Envia-nos uma mensagem e respondemos o mais rápido possível.

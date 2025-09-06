@@ -141,6 +141,10 @@ function initNavigation() {
                 // Toggle active class for animation
                 this.classList.toggle('active');
                 menuDropdown.classList.toggle('active');
+
+                // Update aria-expanded attribute
+                const isExpanded = this.classList.contains('active');
+                this.setAttribute('aria-expanded', isExpanded.toString());
             }
         });
     });
@@ -164,6 +168,7 @@ function initNavigation() {
             }
             if (hamburgerBtn) {
                 hamburgerBtn.classList.remove('active');
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
             }
 
             // Small delay to ensure menu closes before navigation
@@ -179,6 +184,7 @@ function initNavigation() {
             // Close all menus
             document.querySelectorAll('.hamburger-btn.active').forEach(btn => {
                 btn.classList.remove('active');
+                btn.setAttribute('aria-expanded', 'false');
             });
             document.querySelectorAll('.menu-dropdown.active').forEach(menu => {
                 menu.classList.remove('active');
