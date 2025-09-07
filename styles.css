@@ -226,7 +226,7 @@
 /* Main Page Hero Actions - Completely Isolated */
 .hero-actions {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     justify-content: center;
     flex-wrap: wrap;
     position: fixed;
@@ -1671,7 +1671,7 @@ body.dark-mode .footer {
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: repeat(2, auto);
-        gap: 2.5rem; /* Even more spacing between buttons */
+        gap: 2rem; /* Consistent spacing with desktop for better mobile UX */
         width: auto;
         bottom: 11rem;
     }
