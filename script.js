@@ -54,24 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
-// Dark mode toggle functionality
-document.addEventListener("click", e => {
-    let tar = e.target;
-    if (tar.name == "toggle") {
-        // Toggle dark mode class on specific sections
-        const sections = ['services', 'gallery', 'about', 'contact'];
-        sections.forEach(sectionId => {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.classList.toggle("dark-mode");
-            }
-        });
-        // Update button classes based on mode
-        updateButtonClasses();
-    }
-});
-
-// Light bulb toggle functionality
+// Unified dark mode toggle functionality
 function toggleDarkMode() {
     // Toggle dark mode class on specific sections
     const sections = ['services', 'gallery', 'about', 'contact'];
@@ -84,6 +67,15 @@ function toggleDarkMode() {
     // Update button classes based on mode
     updateButtonClasses();
 }
+
+// Single event listener for dark mode toggle
+document.addEventListener("click", e => {
+    let tar = e.target;
+    if (tar.name == "toggle" || tar.closest('.light-toggle') || tar.classList.contains('light-toggle')) {
+        e.preventDefault();
+        toggleDarkMode();
+    }
+});
 
 // Function to update button classes based on dark mode
 function updateButtonClasses() {
@@ -468,60 +460,7 @@ function initHeroAnimations(isMobile = false) {
     console.log('Hero animations initialized (simplified version)');
 }
 
-function createParticleEffect(e) {
-    const button = e.target;
-    const rect = button.getBoundingClientRect();
 
-    // Create multiple particles
-    for (let i = 0; i < 8; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-
-        // Random position around the button
-        const angle = (Math.PI * 2 * i) / 8;
-        const radius = 20 + Math.random() * 30;
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-
-        particle.style.cssText = `
-            position: absolute;
-            left: ${rect.left + rect.width / 2 + x - 2}px;
-            top: ${rect.top + rect.height / 2 + y - 2}px;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1000;
-            animation: particleFloat 1s ease-out forwards;
-        `;
-
-        document.body.appendChild(particle);
-
-        // Remove particle after animation
-        setTimeout(() => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
-            }
-        }, 1000);
-    }
-}
-
-// Add particle animation styles
-const particleStyle = document.createElement('style');
-particleStyle.textContent = `
-    @keyframes particleFloat {
-        0% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: scale(0) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
-        }
-    }
-`;
-document.head.appendChild(particleStyle);
 
 // ===========================================
 // STATS ANIMATION
