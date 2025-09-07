@@ -366,11 +366,7 @@ function initContactForm() {
     }
 }
 
-function fallbackContact(message) {
-    window.open('https://www.instagram.com/anjocrafty/', '_blank');
-    showNotification('Instagram aberto! Copie esta mensagem manualmente.', 'info');
-    console.log('Mensagem para copiar:', message);
-}
+
 
 // ===========================================
 // NOTIFICATION SYSTEM
@@ -468,88 +464,8 @@ document.head.appendChild(style);
 // ===========================================
 
 function initHeroAnimations(isMobile = false) {
-    const heroTitle = document.querySelector('.hero-title');
-    const ctaButtons = document.querySelectorAll('.hero-actions .cta-button');
-
-    // Skip magnetic effects on mobile for performance
-    if (!isMobile) {
-        // Throttle mousemove for better performance
-        let mouseThrottleTimeout;
-        const throttledMouseMove = (e) => {
-            if (mouseThrottleTimeout) return;
-
-            mouseThrottleTimeout = setTimeout(() => {
-                const mouseX = e.clientX;
-                const mouseY = e.clientY;
-
-                ctaButtons.forEach(button => {
-                    const rect = button.getBoundingClientRect();
-                    const buttonX = rect.left + rect.width / 2;
-                    const buttonY = rect.top + rect.height / 2;
-
-                    const distance = Math.sqrt(
-                        Math.pow(mouseX - buttonX, 2) + Math.pow(mouseY - buttonY, 2)
-                    );
-
-                    // Magnetic effect within 100px radius
-                    if (distance < 100) {
-                        const strength = (100 - distance) / 100;
-                        const moveX = (mouseX - buttonX) * strength * 0.3;
-                        const moveY = (mouseY - buttonY) * strength * 0.3;
-
-                        button.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                    } else {
-                        button.style.transform = '';
-                    }
-                });
-
-                // Parallax title effect
-                if (heroTitle) {
-                    const rect = heroTitle.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
-
-                    const deltaX = (mouseX - centerX) / window.innerWidth;
-                    const deltaY = (mouseY - centerY) / window.innerHeight;
-
-                    const tiltX = deltaX * 2; // Max 2 degrees tilt
-                    const tiltY = deltaY * 2;
-
-                    heroTitle.style.transform = `perspective(1000px) rotateX(${tiltY}deg) rotateY(${tiltX}deg)`;
-                }
-
-                mouseThrottleTimeout = null;
-            }, 16); // ~60fps throttling
-        };
-
-        // Magnetic button effect - only on desktop with throttling
-        document.addEventListener('mousemove', throttledMouseMove, { passive: true });
-
-        // Reset transforms when mouse leaves
-        document.addEventListener('mouseleave', () => {
-            ctaButtons.forEach(button => {
-                button.style.transform = '';
-            });
-            if (heroTitle) {
-                heroTitle.style.transform = '';
-            }
-        }, { passive: true });
-
-        // Enhanced particle effect on button hover - only on desktop
-        ctaButtons.forEach(button => {
-            button.addEventListener('mouseenter', createParticleEffect, { passive: true });
-        });
-    } else {
-        // Mobile: simpler hover effects without particles
-        ctaButtons.forEach(button => {
-            button.addEventListener('touchstart', () => {
-                button.style.transform = 'scale(0.98)';
-            }, { passive: true });
-            button.addEventListener('touchend', () => {
-                button.style.transform = '';
-            }, { passive: true });
-        });
-    }
+    // Simplified hero animations - removed magnetic effects and particles for better performance
+    console.log('Hero animations initialized (simplified version)');
 }
 
 function createParticleEffect(e) {
