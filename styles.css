@@ -30,8 +30,9 @@
 
 .hero-subtitle {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out 1.2s forwards;
+    animation: bounceIn 3s ease-out 4.2s forwards;
 }
+
 
 
 
@@ -41,19 +42,19 @@
 }
 
 .hero-actions .cta-button:nth-child(1) {
-    animation: bounceInUp 0.8s ease-out 1.5s forwards;
+    animation: bounceIn 5s ease-out 1.5s forwards;
 }
 
 .hero-actions .cta-button:nth-child(2) {
-    animation: bounceInUp 0.8s ease-out 1.7s forwards;
+    animation: bounceIn 5s ease-out 1.7s forwards;
 }
 
 .hero-actions .cta-button:nth-child(3) {
-    animation: bounceInUp 0.8s ease-out 1.9s forwards;
+    animation: bounceIn 5s ease-out 1.9s forwards;
 }
 
 .hero-actions .cta-button:nth-child(4) {
-    animation: bounceInUp 0.8s ease-out 2.1s forwards;
+    animation: bounceIn 5s ease-out 2.1s forwards;
 }
 
 @keyframes bounceIn {
@@ -576,8 +577,9 @@ body.dark-mode .header {
 }
 
 .hero-title {
-    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
-    font-weight: 700;
+    font-size: clamp(3.3rem, 6.75vw, 5.25rem);
+    font-weight: 600;
+    font-family: 'Anona', sans-serif;
     margin-bottom: 1rem;
     line-height: 1.2;
     white-space: nowrap;
@@ -1287,8 +1289,9 @@ body.dark-mode .footer {
     }
 
     .hero-title {
-        font-size: clamp(1.8rem, 5vw, 2.5rem);
-        font-weight: 700;
+        font-size: clamp(2.7rem, 7.5vw, 3.75rem);
+        font-weight: 600;
+        font-family: 'Anona', sans-serif;
         margin-bottom: 0.8rem;
         line-height: 1.2;
         white-space: normal;
@@ -1474,7 +1477,7 @@ body.dark-mode .footer {
 
     /* Enhanced mobile container */
     #container {
-        padding-top: 0;
+        padding-top: 8rem;
         font-size: 1rem;
         font-weight: normal;
         touch-action: manipulation;
@@ -2059,7 +2062,7 @@ input[type=checkbox].pristine:focus {
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 300;
     z-index: 4;
