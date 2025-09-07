@@ -731,12 +731,8 @@ function initIframeResponsive() {
             }
         } catch (e) {
             // Cross-origin iframe, use fallback method
-            console.log('Cross-origin iframe detected, using fallback height adjustment');
-
-            // Set a reasonable minimum height and let CSS aspect-ratio handle initial sizing
-            const currentHeight = parseInt(iframe.style.height) || 800;
-            const newHeight = Math.max(currentHeight, 600); // Minimum height
-            iframe.style.height = newHeight + 'px';
+            console.log('Cross-origin iframe detected, letting CSS handle height');
+            // Let CSS handle the height with min-height: 600px
         }
     }
 

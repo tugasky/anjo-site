@@ -1309,21 +1309,32 @@ body.dark-mode .footer {
     font-size: 0.9rem;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive - Enhanced Touch Responsiveness */
 @media (max-width: 768px) {
+    /* Hide desktop navigation */
     .nav-menu {
         display: none;
     }
 
+    /* Enhanced hamburger button for touch */
     .hamburger-btn {
         display: flex;
+        width: 56px; /* Minimum 44px + padding */
+        height: 56px;
+        border-radius: 12px;
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+        -webkit-touch-callout: none; /* Disable callout on iOS */
+        user-select: none; /* Prevent text selection */
     }
 
+    /* Enhanced hero section for mobile */
     .hero {
         padding: 40px 1rem 2rem;
         display: flex;
         align-items: flex-start;
         justify-content: center;
+        min-height: 100vh;
+        touch-action: manipulation; /* Optimize touch handling */
     }
 
     .hero-title {
@@ -1346,8 +1357,10 @@ body.dark-mode .footer {
     .hero-content {
         max-width: 600px;
         margin: 2rem auto 0;
+        padding: 0 1rem;
     }
 
+    /* Enhanced touch targets for hero buttons */
     .hero-actions {
         position: fixed;
         left: 50%;
@@ -1355,45 +1368,99 @@ body.dark-mode .footer {
         z-index: 10;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-        max-width: 300px;
-        width: 100%;
+        gap: 0.75rem; /* Increased gap for better touch separation */
+        max-width: 320px;
+        width: calc(100% - 2rem);
+        bottom: 6rem;
     }
 
     .hero-actions .cta-button {
-        padding: 0.6rem 1rem;
-        min-width: auto;
-        font-size: 0.8rem;
+        padding: 1rem 1.5rem; /* Increased padding for better touch targets */
+        min-width: 140px; /* Ensure minimum width */
+        min-height: 48px; /* Minimum touch target height */
+        font-size: 0.9rem;
         text-align: center;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-/* Hero title white in light mode (when not in dark mode) */
-body:not(.dark-mode) .hero-title {
-    color: white;
-}
+    /* Enhanced touch feedback for buttons */
+    .cta-button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
 
-/* Hero title dark color in dark mode - REMOVED */
+    /* Hero title white in light mode (when not in dark mode) */
+    body:not(.dark-mode) .hero-title {
+        color: white;
+    }
 
+    /* Enhanced section titles */
     .section-title {
         font-size: 2rem;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
     }
 
+    /* Enhanced service cards for touch */
     .services-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding: 0 1rem;
     }
 
+    .service-card {
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+        min-height: 120px; /* Ensure adequate touch area */
+        touch-action: manipulation;
+    }
 
+    .service-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
 
+    /* Enhanced contact section */
     .contact-content {
         grid-template-columns: 1fr;
         gap: 2rem;
+        padding: 0 1rem;
     }
 
+    /* Enhanced form inputs for touch */
+    .form-group input,
+    .form-group textarea {
+        padding: 1.2rem 1rem; /* Increased padding */
+        font-size: 1rem; /* Prevent zoom on iOS */
+        border-radius: 12px;
+        min-height: 48px; /* Minimum touch target */
+        -webkit-appearance: none; /* Remove iOS styling */
+        touch-action: manipulation;
+    }
+
+    .submit-button {
+        padding: 1.2rem 2rem;
+        min-height: 48px;
+        font-size: 1rem;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .submit-button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    /* Enhanced footer for touch */
     .footer-content {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 1.5rem;
+        padding: 0 1rem;
         /* Ensure footer is not affected by performance mode */
         contain: none !important;
         will-change: auto !important;
@@ -1401,47 +1468,97 @@ body:not(.dark-mode) .hero-title {
 
     .footer-social-links {
         justify-content: center;
+        gap: 1rem;
+    }
+
+    .footer-social-link {
+        font-size: 0.9rem;
+        padding: 0.75rem 1.5rem;
+        min-width: 48px;
+        min-height: 48px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .footer-social-link:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
     }
 
     .footer-links {
         justify-content: center;
-    }
-
-    .footer-social-link {
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem;
+        gap: 1rem;
     }
 
     .footer-link {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        min-width: 48px;
+        min-height: 48px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
+    /* Enhanced stats for touch */
     .stats {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        padding: 0 1rem;
     }
 
-    /* Dark Mode Toggle Mobile */
+    /* Enhanced dark mode toggle */
     input[type=checkbox].pristine {
         top: 1rem;
         right: 0.5rem;
-        width: 1.8em;
-        height: 1.2em;
+        width: 2em; /* Larger touch target */
+        height: 1.5em;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
     input[type=checkbox].pristine:before {
-        top: 0.1em;
-        left: 0.1em;
-        width: 0.8em;
-        height: 0.6em;
+        top: 0.15em;
+        left: 0.15em;
+        width: 0.9em;
+        height: 0.8em;
     }
 
-    /* Mobile container adjustments */
+    /* Enhanced mobile container */
     #container {
         padding-top: 0;
         font-size: 1rem;
         font-weight: normal;
+        touch-action: manipulation;
+    }
+
+    /* Enhanced navigation links in mobile menu */
+    .mobile-nav .nav-link {
+        padding: 1rem 1.5rem; /* Increased padding */
+        min-height: 48px; /* Minimum touch target */
+        font-size: 1rem;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-nav .nav-link:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+
+    /* Enhanced light toggle in mobile menu */
+    .mobile-nav .light-toggle {
+        width: 48px; /* Minimum touch target */
+        height: 48px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .mobile-nav .light-toggle:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
     }
 }
 
@@ -2037,7 +2154,6 @@ input[type=checkbox].pristine:focus {
     transition: var(--transition);
     color: var(--text-color);
     font-size: 1.2rem;
-    margin-left: auto;
 }
 
 .mobile-nav .light-toggle:hover {
