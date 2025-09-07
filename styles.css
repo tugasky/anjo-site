@@ -2,6 +2,10 @@
    ANJO CRAFTY - STATIC SITE STYLES
    =========================================== */
 
+/* ===========================================
+   MAIN PAGE STYLES - HERO SECTION ONLY
+   =========================================== */
+
 /* Hero Entrance Animations - Interactive Version */
 .hero-title {
     position: fixed;
@@ -41,7 +45,356 @@
     z-index: -1;
 }
 
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #020617 100%);
+    color: white;
+    padding: 120px 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
 
+/* Blinking Stars Background */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        /* Large bright stars - reduced count */
+        radial-gradient(3px 3px at 15% 25%, #fff, transparent),
+        radial-gradient(2.8px 2.8px at 35% 70%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(3.2px 3.2px at 55% 15%, #fff, transparent),
+        radial-gradient(2.5px 2.5px at 75% 45%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(3px 3px at 25% 80%, #fff, transparent),
+
+        /* Medium stars - reduced count */
+        radial-gradient(2px 2px at 50% 30%, #fff, transparent),
+        radial-gradient(1.8px 1.8px at 70% 75%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2.2px 2.2px at 90% 40%, #fff, transparent),
+        radial-gradient(1.9px 1.9px at 20% 65%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2.1px 2.1px at 40% 10%, #fff, transparent),
+
+        /* Small stars - reduced count */
+        radial-gradient(1px 1px at 28% 40%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 48% 95%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.1px 1.1px at 68% 15%, #fff, transparent),
+        radial-gradient(1.3px 1.3px at 88% 60%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 3% 35%, rgba(255, 255, 255, 0.8), transparent);
+    background-repeat: repeat;
+    background-size: 100% 100%;
+    animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+/* Additional star layers for more random blinking */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 22% 18%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(2.1px 2.1px at 67% 82%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1.2px 1.2px at 89% 45%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2.4px 2.4px at 34% 67%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.8px 1.8px at 56% 23%, rgba(255, 255, 255, 0.9), transparent);
+    background-repeat: repeat;
+    background-size: 100% 100%;
+    animation: twinkle-alt 6s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Canvas Animation */
+#demo-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: clamp(3.3rem, 6.75vw, 5.25rem);
+    font-weight: 600;
+    font-family: 'Anona', sans-serif;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-shadow:
+        0 -2px 2px rgba(255, 255, 255, 0.3),
+        0 -1px 4px rgba(255, 255, 255, 0.25),
+        0 1px 6px rgba(255, 255, 255, 0.2),
+        0 2px 8px rgba(255, 255, 255, 0.15),
+        0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+.hero-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#container {
+    color: #999;
+    text-transform: uppercase;
+    font-size: 36px;
+    font-weight: bold;
+    padding-top: 200px;
+    position: relative;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+#flip {
+    height: 45px;
+    overflow: hidden;
+    position: relative;
+}
+
+#flip > div {
+    display: flex;
+    flex-direction: column;
+    animation: show 30s steps(15) infinite;
+}
+
+#flip > div > div {
+    color: #fff;
+    padding: 4px 12px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 30%, #cbd5e1 60%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-stroke: 1px rgba(255, 255, 255, 0.2);
+    text-shadow:
+        0 -2px 2px rgba(255, 255, 255, 0.3),
+        0 -1px 4px rgba(255, 255, 255, 0.25),
+        0 1px 6px rgba(255, 255, 255, 0.2),
+        0 2px 8px rgba(255, 255, 255, 0.15),
+        0 0 10px rgba(255, 255, 255, 0.1),
+        0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+.hero-tagline {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Main Page Hero Actions - Completely Isolated */
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 6rem;
+    left: 50%;
+    z-index: 10;
+}
+
+/* Main Page CTA Buttons - Completely Isolated */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 2px solid white;
+    min-width: 160px;
+    text-align: center;
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* Light mode specific styling for CTA button */
+body:not(.dark-mode) .cta-button {
+    background: #374151; /* Dark grey */
+    border-color: #374151;
+}
+
+.cta-button:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Initially hidden elements - Main Page Only */
+.hero-subtitle,
+#container {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hero-actions,
+.hero-credit {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+    /* Fixed positioning without transform initially */
+    position: fixed;
+    left: 50%;
+}
+
+/* Initially disable button interactions */
+.hero-actions .cta-button {
+    pointer-events: none;
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.hero-subtitle.fade-in,
+#container.fade-in {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hero-actions.fade-in {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: fit-content;
+}
+
+/* Enable button interactions after fade-in */
+.hero-actions.fade-in .cta-button {
+    pointer-events: auto;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.hero-credit.fade-in {
+    display: block;
+    opacity: 1;
+    pointer-events: auto;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: fit-content;
+}
+
+/* Main Page Hero Credit - Completely Isolated */
+.hero-credit {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 300;
+    z-index: 4;
+    text-shadow:
+        0 0 8px rgba(255, 255, 255, 0.4),
+        0 0 16px rgba(255, 255, 255, 0.2),
+        0 0 24px rgba(255, 255, 255, 0.1);
+}
+
+.hero-credit.fade-in {
+    bottom: 1rem; /* Move up when content appears */
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: fit-content;
+}
+
+/* Main Page Hero Floating Button Animations */
+.cta-button {
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+.cta-button:nth-child(2) {
+    animation-delay: -2s;
+}
+
+.cta-button:nth-child(3) {
+    animation-delay: -4s;
+}
+
+.cta-button:nth-child(4) {
+    animation-delay: -6s;
+}
+
+/* Main Page Hero Shooting Star Hover Effects */
+.cta-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.cta-button:hover::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    animation: shootingStar 0.6s ease-out;
+}
+
+/* Main Page Hero Magnetic Effect Setup */
+.hero-actions {
+    position: relative;
+    overflow: visible;
+}
+
+.hero-title {
+    transition: transform 0.1s ease;
+}
+
+/* Main Page Keyframes */
 @keyframes bounceIn {
     0% {
         opacity: 0;
@@ -100,7 +453,6 @@
     }
 }
 
-/* Interactive Hero Animations */
 @keyframes moveUp {
     0% {
         top: 50vh;
@@ -112,46 +464,55 @@
     }
 }
 
-/* Initially hidden elements */
-.hero-subtitle,
-#container,
-.hero-actions,
-.hero-credit {
-    display: none;
-    opacity: 0;
+@keyframes twinkle {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    25% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+    75% {
+        opacity: 0.5;
+        transform: scale(1.03);
+    }
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
 }
 
-.hero-subtitle.fade-in,
-#container.fade-in {
-    display: block;
-    opacity: 1;
+@keyframes twinkle-alt {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.98);
+    }
+    30% {
+        opacity: 0.7;
+        transform: scale(1.02);
+    }
+    60% {
+        opacity: 0.4;
+        transform: scale(1.01);
+    }
+    80% {
+        opacity: 0.8;
+        transform: scale(1.03);
+    }
+    100% {
+        opacity: 0.2;
+        transform: scale(0.98);
+    }
 }
 
-.hero-actions.fade-in {
-    opacity: 1;
-}
-
-.hero-credit.fade-in {
-    display: block;
-    opacity: 1;
-}
-
-/* Hero Floating Button Animations - Step 3 */
-.cta-button {
-    position: relative;
-    animation: float 6s ease-in-out infinite;
-}
-
-.cta-button:nth-child(2) {
-    animation-delay: -2s;
-}
-
-.cta-button:nth-child(3) {
-    animation-delay: -4s;
-}
-
-.cta-button:nth-child(4) {
-    animation-delay: -6s;
+@keyframes show {
+    0%   {transform:translateY(0);}
+    100% {transform:translateY(-675px);}
 }
 
 @keyframes float {
@@ -161,28 +522,6 @@
     50% {
         transform: translateY(-5px);
     }
-}
-
-/* Hero Shooting Star Hover Effects - Step 4 */
-.cta-button::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.3s ease;
-    pointer-events: none;
-}
-
-.cta-button:hover::after {
-    width: 200px;
-    height: 200px;
-    opacity: 0;
-    animation: shootingStar 0.6s ease-out;
 }
 
 @keyframes shootingStar {
@@ -203,15 +542,9 @@
     }
 }
 
-/* Hero Magnetic Effect Setup - Step 5 */
-.hero-actions {
-    position: relative;
-    overflow: visible;
-}
-
-.hero-title {
-    transition: transform 0.1s ease;
-}
+/* ===========================================
+   OTHER SECTIONS STYLES
+   =========================================== */
 
 /* CSS Variables */
 :root {
@@ -304,7 +637,7 @@ a {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 2rem;
 }
 
 /* Header & Navigation */
@@ -701,7 +1034,6 @@ body.dark-mode .header {
     position: fixed;
     bottom: 6rem;
     left: 50%;
-    transform: translateX(-50%);
     z-index: 10;
 }
 
@@ -1335,7 +1667,6 @@ body.dark-mode .footer {
     /* Enhanced touch targets for hero buttons */
     .hero-actions {
         left: 50%;
-        transform: translateX(-50%);
         z-index: 10;
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -2078,7 +2409,6 @@ input[type=checkbox].pristine:focus {
     position: fixed;
     bottom: 2rem;
     left: 50%;
-    transform: translateX(-50%);
     text-align: center;
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.6);

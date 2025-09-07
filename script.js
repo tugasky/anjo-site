@@ -2,6 +2,340 @@
 // ANJO CRAFTY - STATIC SITE JAVASCRIPT
 // ===========================================
 
+/* ===========================================
+   MAIN PAGE SCRIPTS - HERO SECTION ONLY
+   =========================================== */
+
+// ===========================================
+// HERO TITLE INTERACTION
+// ===========================================
+
+function initHeroTitleInteraction() {
+    const heroTitle = document.querySelector('.hero-title');
+    let hasBeenClicked = false;
+
+    if (heroTitle) {
+        heroTitle.addEventListener('click', function() {
+            if (hasBeenClicked) return; // Prevent multiple clicks
+            hasBeenClicked = true;
+
+            console.log('Hero title clicked - starting animation sequence');
+
+            // Add clicked class to trigger movement animation
+            this.classList.add('clicked');
+
+            // After title movement completes (1s), start fade-ins
+            setTimeout(() => {
+                triggerFadeIns();
+            }, 1000);
+        });
+
+        console.log('Hero title interaction initialized');
+    }
+}
+
+function triggerFadeIns() {
+    const elementsToFade = [
+        '.hero-subtitle',
+        '#container',
+        '.hero-actions',
+        '.hero-credit'
+    ];
+
+    // Stagger the fade-ins
+    elementsToFade.forEach((selector, index) => {
+        setTimeout(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.classList.add('fade-in');
+                console.log(`Fading in: ${selector}`);
+            }
+        }, index * 300); // 300ms delay between each element
+    });
+}
+
+// ===========================================
+// CANVAS ANIMATION - Interactive Network
+// ===========================================
+
+function initCanvasAnimation(isMobile = false) {
+    (function() {
+
+        var width, height, canvas, ctx, stars, target, animateHeader = true;
+        var lastFrameTime = 0;
+        var frameInterval = isMobile ? 32 : 16; // 30fps on mobile, 60fps on desktop
+
+        // Main
+        initHeader();
+        initAnimation();
+        addListeners();
+
+        function initHeader() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            target = {x: width/2, y: height/2};
+
+            canvas = document.getElementById('demo-canvas');
+            canvas.width = width;
+            canvas.height = height;
+            ctx = canvas.getContext('2d');
+
+            // High star density for constellation effects
+            var starCount = isMobile ? 120 : 200; // 120 stars on mobile, 200 on desktop (high density for constellations)
+
+            // create stars
+            stars = [];
+            for(var i = 0; i < starCount; i++) {
+                var star = {
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    originX: Math.random() * width,
+                    originY: Math.random() * height,
+                    size: Math.random() * 2 + 0.5,
+                    brightness: Math.random() * 0.8 + 0.2,
+                    twinkle: Math.random() * Math.PI * 2,
+                    speed: isMobile ? Math.random() * 0.01 + 0.005 : Math.random() * 0.02 + 0.01 // Slower twinkling on mobile
+                };
+                stars.push(star);
+            }
+
+            // Find closest stars for connections using original algorithm
+            for(var i = 0; i < stars.length; i++) {
+                var closest = [];
+                var s1 = stars[i];
+                // Fewer connections on mobile for better performance
+                var maxConnections = isMobile ? 3 : 5; // 3 on mobile, 5 on desktop
+
+                for(var j = 0; j < stars.length; j++) {
+                    var s2 = stars[j];
+                    if(s1 !== s2) {
+                        var dist = getDistance(s1, s2);
+                        var placed = false;
+
+                        // Find closest neighbors (3 on mobile, 5 on desktop)
+                        for(var k = 0; k < maxConnections; k++) {
+                            if(!placed) {
+                                if(closest[k] == undefined) {
+                                    closest[k] = {
+                                        star: s2,
+                                        distance: dist,
+                                        strength: 1 - (dist / Math.max(width, height) * 0.1) // Distance-based strength
+                                    };
+                                    placed = true;
+                                }
+                            }
+                        }
+
+                        // Replace farther connections with closer ones
+                        for(var k = 0; k < maxConnections; k++) {
+                            if(!placed) {
+                                if(closest[k] && dist < closest[k].distance) {
+                                    closest[k] = {
+                                        star: s2,
+                                        distance: dist,
+                                        strength: 1 - (dist / Math.max(width, height) * 0.1)
+                                    };
+                                    placed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                s1.closest = closest.filter(function(c) { return c !== undefined; });
+            }
+        }
+
+        function addListeners() {
+            if(!('ontouchstart' in window)) {
+                window.addEventListener('mousemove', mouseMove);
+            }
+            window.addEventListener('scroll', scrollCheck);
+            window.addEventListener('resize', resize);
+        }
+
+        function mouseMove(e) {
+            var posx = posy = 0;
+            if (e.pageX || e.pageY) {
+                posx = e.pageX;
+                posy = e.pageY;
+            }
+            else if (e.clientX || e.clientY) {
+                posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            target.x = posx;
+            target.y = posy;
+        }
+
+        function scrollCheck() {
+            if(document.body.scrollTop > height) animateHeader = false;
+            else animateHeader = true;
+        }
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initHeader(); // Reinitialize stars on resize
+        }
+
+        // animation
+        function initAnimation() {
+            animate();
+            // Reduce star movement on mobile - only animate subset of stars
+            if (!isMobile) {
+                // Only animate every other star on desktop for better performance
+                for(var i = 0; i < stars.length; i += 2) {
+                    shiftStar(stars[i]);
+                }
+            }
+        }
+
+        function animate(currentTime) {
+            if(animateHeader) {
+                // Throttle frame rate on mobile
+                if (currentTime - lastFrameTime >= frameInterval) {
+                    ctx.clearRect(0,0,width,height);
+
+                    // Update star twinkling
+                    for(var i in stars) {
+                        stars[i].twinkle += stars[i].speed;
+                    }
+
+                    for(var i in stars) {
+                        var star = stars[i];
+                        var mouseDist = getDistance(target, star);
+
+                        // Mouse-over only activation - much smaller ranges
+                        if(Math.abs(mouseDist) < 150) {
+                            star.active = 0.3;
+                        } else if(Math.abs(mouseDist) < 300) {
+                            star.active = 0.1;
+                        } else if(Math.abs(mouseDist) < 500) {
+                            star.active = 0.02;
+                        } else {
+                            star.active = 0;
+                        }
+
+                        // Draw connections to nearby stars (skip on mobile)
+                        if (!isMobile) {
+                            drawConnections(star);
+                        }
+
+                        // Draw the star
+                        drawStar(star);
+                    }
+
+                    lastFrameTime = currentTime;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        function shiftStar(s) {
+            TweenLite.to(s, 2+2*Math.random(), {
+                x: s.originX - 30 + Math.random() * 60,
+                y: s.originY - 30 + Math.random() * 60,
+                ease: Circ.easeInOut,
+                onComplete: function() {
+                    shiftStar(s);
+                }
+            });
+        }
+
+
+
+        // Canvas manipulation
+        function drawConnections(s) {
+            // Only draw connections when mouse is near stars (interactive style)
+            if(s.active > 0 && s.closest && s.closest.length > 0) {
+                for(var i in s.closest) {
+                    var connection = s.closest[i];
+                    var otherStar = connection.star;
+                    var dist = connection.distance;
+
+                    // Calculate connection opacity based on mouse proximity and connection strength
+                    var connectionStrength = (s.active + otherStar.active) / 2;
+                    var distanceOpacity = connection.strength * 0.6; // Distance-based opacity
+                    var finalOpacity = Math.min(connectionStrength * distanceOpacity, 0.8);
+
+                    if(finalOpacity > 0.1) { // Only draw visible connections
+                        ctx.beginPath();
+                        ctx.moveTo(s.x, s.y);
+                        ctx.lineTo(otherStar.x, otherStar.y);
+                        ctx.strokeStyle = 'rgba(156,217,249,' + finalOpacity + ')';
+                        ctx.lineWidth = Math.max(finalOpacity * 1.5, 0.5);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function drawStar(s) {
+            var twinkleEffect = Math.sin(s.twinkle) * 0.3 + 0.7;
+            var brightness = s.brightness * twinkleEffect * (1 + s.active * 0.5);
+
+            ctx.save();
+            ctx.globalAlpha = brightness;
+
+            // Draw star shape
+            ctx.beginPath();
+            var spikes = 5;
+            var outerRadius = s.size * (1 + s.active);
+            var innerRadius = s.size * 0.4 * (1 + s.active);
+
+            for(var i = 0; i < spikes * 2; i++) {
+                var angle = (i * Math.PI) / spikes;
+                var radius = i % 2 === 0 ? outerRadius : innerRadius;
+                var x = s.x + Math.cos(angle) * radius;
+                var y = s.y + Math.sin(angle) * radius;
+
+                if(i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+
+            // Create gradient for star glow
+            var gradient = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, outerRadius * 2);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, ' + brightness + ')');
+            gradient.addColorStop(0.5, 'rgba(156, 217, 249, ' + brightness * 0.8 + ')');
+            gradient.addColorStop(1, 'rgba(156, 217, 249, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Add glow effect (reduced on mobile)
+            if (!isMobile) {
+                ctx.shadowColor = 'rgba(156, 217, 249, ' + brightness * 0.5 + ')';
+                ctx.shadowBlur = outerRadius * 3;
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        // Util
+        function getDistance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+    })();
+}
+
+// ===========================================
+// HERO ANIMATIONS - Magnetic Buttons & Parallax
+// ===========================================
+
+function initHeroAnimations(isMobile = false) {
+    // Simplified hero animations - removed magnetic effects and particles for better performance
+    console.log('Hero animations initialized (simplified version)');
+}
+
+/* ===========================================
+   OTHER SECTIONS SCRIPTS
+   =========================================== */
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded - Starting initialization...');
 
@@ -453,17 +787,6 @@ style.textContent = `
 document.head.appendChild(style);
 
 // ===========================================
-// HERO ANIMATIONS - Magnetic Buttons & Parallax
-// ===========================================
-
-function initHeroAnimations(isMobile = false) {
-    // Simplified hero animations - removed magnetic effects and particles for better performance
-    console.log('Hero animations initialized (simplified version)');
-}
-
-
-
-// ===========================================
 // STATS ANIMATION
 // ===========================================
 
@@ -561,8 +884,6 @@ function initCTAButton() {
     }
 }
 
-
-
 // ===========================================
 // IFRAME RESPONSIVE HANDLING
 // ===========================================
@@ -647,323 +968,5 @@ function initIframeResponsive() {
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(adjustIframeHeight, 250);
-    });
-}
-
-// ===========================================
-// CANVAS ANIMATION - Interactive Network
-// ===========================================
-
-function initCanvasAnimation(isMobile = false) {
-    (function() {
-
-        var width, height, canvas, ctx, stars, target, animateHeader = true;
-        var lastFrameTime = 0;
-        var frameInterval = isMobile ? 32 : 16; // 30fps on mobile, 60fps on desktop
-
-        // Main
-        initHeader();
-        initAnimation();
-        addListeners();
-
-        function initHeader() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            target = {x: width/2, y: height/2};
-
-            canvas = document.getElementById('demo-canvas');
-            canvas.width = width;
-            canvas.height = height;
-            ctx = canvas.getContext('2d');
-
-            // High star density for constellation effects
-            var starCount = isMobile ? 120 : 200; // 120 stars on mobile, 200 on desktop (high density for constellations)
-
-            // create stars
-            stars = [];
-            for(var i = 0; i < starCount; i++) {
-                var star = {
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    originX: Math.random() * width,
-                    originY: Math.random() * height,
-                    size: Math.random() * 2 + 0.5,
-                    brightness: Math.random() * 0.8 + 0.2,
-                    twinkle: Math.random() * Math.PI * 2,
-                    speed: isMobile ? Math.random() * 0.01 + 0.005 : Math.random() * 0.02 + 0.01 // Slower twinkling on mobile
-                };
-                stars.push(star);
-            }
-
-            // Find closest stars for connections using original algorithm
-            for(var i = 0; i < stars.length; i++) {
-                var closest = [];
-                var s1 = stars[i];
-                // Fewer connections on mobile for better performance
-                var maxConnections = isMobile ? 3 : 5; // 3 on mobile, 5 on desktop
-
-                for(var j = 0; j < stars.length; j++) {
-                    var s2 = stars[j];
-                    if(s1 !== s2) {
-                        var dist = getDistance(s1, s2);
-                        var placed = false;
-
-                        // Find closest neighbors (3 on mobile, 5 on desktop)
-                        for(var k = 0; k < maxConnections; k++) {
-                            if(!placed) {
-                                if(closest[k] == undefined) {
-                                    closest[k] = {
-                                        star: s2,
-                                        distance: dist,
-                                        strength: 1 - (dist / Math.max(width, height) * 0.1) // Distance-based strength
-                                    };
-                                    placed = true;
-                                }
-                            }
-                        }
-
-                        // Replace farther connections with closer ones
-                        for(var k = 0; k < maxConnections; k++) {
-                            if(!placed) {
-                                if(closest[k] && dist < closest[k].distance) {
-                                    closest[k] = {
-                                        star: s2,
-                                        distance: dist,
-                                        strength: 1 - (dist / Math.max(width, height) * 0.1)
-                                    };
-                                    placed = true;
-                                }
-                            }
-                        }
-                    }
-                }
-                s1.closest = closest.filter(function(c) { return c !== undefined; });
-            }
-        }
-
-        // Event handling
-        function addListeners() {
-            if(!('ontouchstart' in window)) {
-                window.addEventListener('mousemove', mouseMove);
-            }
-            window.addEventListener('scroll', scrollCheck);
-            window.addEventListener('resize', resize);
-        }
-
-        function mouseMove(e) {
-            var posx = posy = 0;
-            if (e.pageX || e.pageY) {
-                posx = e.pageX;
-                posy = e.pageY;
-            }
-            else if (e.clientX || e.clientY) {
-                posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-                posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-            }
-            target.x = posx;
-            target.y = posy;
-        }
-
-        function scrollCheck() {
-            if(document.body.scrollTop > height) animateHeader = false;
-            else animateHeader = true;
-        }
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            initHeader(); // Reinitialize stars on resize
-        }
-
-        // animation
-        function initAnimation() {
-            animate();
-            // Reduce star movement on mobile - only animate subset of stars
-            if (!isMobile) {
-                // Only animate every other star on desktop for better performance
-                for(var i = 0; i < stars.length; i += 2) {
-                    shiftStar(stars[i]);
-                }
-            }
-        }
-
-        function animate(currentTime) {
-            if(animateHeader) {
-                // Throttle frame rate on mobile
-                if (currentTime - lastFrameTime >= frameInterval) {
-                    ctx.clearRect(0,0,width,height);
-
-                    // Update star twinkling
-                    for(var i in stars) {
-                        stars[i].twinkle += stars[i].speed;
-                    }
-
-                    for(var i in stars) {
-                        var star = stars[i];
-                        var mouseDist = getDistance(target, star);
-
-                        // Mouse-over only activation - much smaller ranges
-                        if(Math.abs(mouseDist) < 150) {
-                            star.active = 0.3;
-                        } else if(Math.abs(mouseDist) < 300) {
-                            star.active = 0.1;
-                        } else if(Math.abs(mouseDist) < 500) {
-                            star.active = 0.02;
-                        } else {
-                            star.active = 0;
-                        }
-
-                        // Draw connections to nearby stars (skip on mobile)
-                        if (!isMobile) {
-                            drawConnections(star);
-                        }
-
-                        // Draw the star
-                        drawStar(star);
-                    }
-
-                    lastFrameTime = currentTime;
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        function shiftStar(s) {
-            TweenLite.to(s, 2+2*Math.random(), {
-                x: s.originX - 30 + Math.random() * 60,
-                y: s.originY - 30 + Math.random() * 60,
-                ease: Circ.easeInOut,
-                onComplete: function() {
-                    shiftStar(s);
-                }
-            });
-        }
-
-
-
-        // Canvas manipulation
-        function drawConnections(s) {
-            // Only draw connections when mouse is near stars (interactive style)
-            if(s.active > 0 && s.closest && s.closest.length > 0) {
-                for(var i in s.closest) {
-                    var connection = s.closest[i];
-                    var otherStar = connection.star;
-                    var dist = connection.distance;
-
-                    // Calculate connection opacity based on mouse proximity and connection strength
-                    var connectionStrength = (s.active + otherStar.active) / 2;
-                    var distanceOpacity = connection.strength * 0.6; // Distance-based opacity
-                    var finalOpacity = Math.min(connectionStrength * distanceOpacity, 0.8);
-
-                    if(finalOpacity > 0.1) { // Only draw visible connections
-                        ctx.beginPath();
-                        ctx.moveTo(s.x, s.y);
-                        ctx.lineTo(otherStar.x, otherStar.y);
-                        ctx.strokeStyle = 'rgba(156,217,249,' + finalOpacity + ')';
-                        ctx.lineWidth = Math.max(finalOpacity * 1.5, 0.5);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function drawStar(s) {
-            var twinkleEffect = Math.sin(s.twinkle) * 0.3 + 0.7;
-            var brightness = s.brightness * twinkleEffect * (1 + s.active * 0.5);
-
-            ctx.save();
-            ctx.globalAlpha = brightness;
-
-            // Draw star shape
-            ctx.beginPath();
-            var spikes = 5;
-            var outerRadius = s.size * (1 + s.active);
-            var innerRadius = s.size * 0.4 * (1 + s.active);
-
-            for(var i = 0; i < spikes * 2; i++) {
-                var angle = (i * Math.PI) / spikes;
-                var radius = i % 2 === 0 ? outerRadius : innerRadius;
-                var x = s.x + Math.cos(angle) * radius;
-                var y = s.y + Math.sin(angle) * radius;
-
-                if(i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-
-            // Create gradient for star glow
-            var gradient = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, outerRadius * 2);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, ' + brightness + ')');
-            gradient.addColorStop(0.5, 'rgba(156, 217, 249, ' + brightness * 0.8 + ')');
-            gradient.addColorStop(1, 'rgba(156, 217, 249, 0)');
-
-            ctx.fillStyle = gradient;
-            ctx.fill();
-
-            // Add glow effect (reduced on mobile)
-            if (!isMobile) {
-                ctx.shadowColor = 'rgba(156, 217, 249, ' + brightness * 0.5 + ')';
-                ctx.shadowBlur = outerRadius * 3;
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-
-        // Util
-        function getDistance(p1, p2) {
-            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-        }
-
-    })();
-}
-
-// ===========================================
-// HERO TITLE INTERACTION
-// ===========================================
-
-function initHeroTitleInteraction() {
-    const heroTitle = document.querySelector('.hero-title');
-    let hasBeenClicked = false;
-
-    if (heroTitle) {
-        heroTitle.addEventListener('click', function() {
-            if (hasBeenClicked) return; // Prevent multiple clicks
-            hasBeenClicked = true;
-
-            console.log('Hero title clicked - starting animation sequence');
-
-            // Add clicked class to trigger movement animation
-            this.classList.add('clicked');
-
-            // After title movement completes (1s), start fade-ins
-            setTimeout(() => {
-                triggerFadeIns();
-            }, 1000);
-        });
-
-        console.log('Hero title interaction initialized');
-    }
-}
-
-function triggerFadeIns() {
-    const elementsToFade = [
-        '.hero-subtitle',
-        '#container',
-        '.hero-actions',
-        '.hero-credit'
-    ];
-
-    // Stagger the fade-ins
-    elementsToFade.forEach((selector, index) => {
-        setTimeout(() => {
-            const element = document.querySelector(selector);
-            if (element) {
-                element.classList.add('fade-in');
-                console.log(`Fading in: ${selector}`);
-            }
-        }, index * 300); // 300ms delay between each element
     });
 }
