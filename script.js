@@ -736,8 +736,8 @@ function initCanvasAnimation(isMobile = false) {
             canvas.height = height;
             ctx = canvas.getContext('2d');
 
-            // Reduce stars on mobile for performance
-            var starCount = isMobile ? 50 : 150; // 50 stars on mobile, 150 on desktop
+            // High star density for constellation effects
+            var starCount = isMobile ? 120 : 200; // 120 stars on mobile, 200 on desktop (high density for constellations)
 
             // create stars
             stars = [];
@@ -755,24 +755,49 @@ function initCanvasAnimation(isMobile = false) {
                 stars.push(star);
             }
 
-            // Find closest stars for connections (skip on mobile for performance)
-            if (!isMobile) {
-                for(var i = 0; i < stars.length; i++) {
-                    var closest = [];
-                    var s1 = stars[i];
-                    for(var j = 0; j < stars.length; j++) {
-                        var s2 = stars[j];
-                        if(s1 !== s2) {
-                            var dist = getDistance(s1, s2);
-                            if(dist < 100) { // Connection distance
-                                closest.push({star: s2, distance: dist});
+            // Find closest stars for connections using original algorithm
+            for(var i = 0; i < stars.length; i++) {
+                var closest = [];
+                var s1 = stars[i];
+                // Fewer connections on mobile for better performance
+                var maxConnections = isMobile ? 3 : 5; // 3 on mobile, 5 on desktop
+
+                for(var j = 0; j < stars.length; j++) {
+                    var s2 = stars[j];
+                    if(s1 !== s2) {
+                        var dist = getDistance(s1, s2);
+                        var placed = false;
+
+                        // Find closest neighbors (3 on mobile, 5 on desktop)
+                        for(var k = 0; k < maxConnections; k++) {
+                            if(!placed) {
+                                if(closest[k] == undefined) {
+                                    closest[k] = {
+                                        star: s2,
+                                        distance: dist,
+                                        strength: 1 - (dist / Math.max(width, height) * 0.1) // Distance-based strength
+                                    };
+                                    placed = true;
+                                }
+                            }
+                        }
+
+                        // Replace farther connections with closer ones
+                        for(var k = 0; k < maxConnections; k++) {
+                            if(!placed) {
+                                if(closest[k] && dist < closest[k].distance) {
+                                    closest[k] = {
+                                        star: s2,
+                                        distance: dist,
+                                        strength: 1 - (dist / Math.max(width, height) * 0.1)
+                                    };
+                                    placed = true;
+                                }
                             }
                         }
                     }
-                    // Sort by distance and keep only closest 3
-                    closest.sort(function(a, b) { return a.distance - b.distance; });
-                    s1.closest = closest.slice(0, 3);
                 }
+                s1.closest = closest.filter(function(c) { return c !== undefined; });
             }
         }
 
@@ -839,9 +864,16 @@ function initCanvasAnimation(isMobile = false) {
                         var star = stars[i];
                         var mouseDist = getDistance(target, star);
 
-                        // Mouse interaction (reduced on mobile)
-                        var mouseInfluence = Math.max(0, 1 - mouseDist / (isMobile ? 100 : 200)); // Smaller influence radius on mobile
-                        star.active = mouseInfluence;
+                        // Mouse-over only activation - much smaller ranges
+                        if(Math.abs(mouseDist) < 150) {
+                            star.active = 0.3;
+                        } else if(Math.abs(mouseDist) < 300) {
+                            star.active = 0.1;
+                        } else if(Math.abs(mouseDist) < 500) {
+                            star.active = 0.02;
+                        } else {
+                            star.active = 0;
+                        }
 
                         // Draw connections to nearby stars (skip on mobile)
                         if (!isMobile) {
@@ -869,22 +901,28 @@ function initCanvasAnimation(isMobile = false) {
             });
         }
 
+
+
         // Canvas manipulation
         function drawConnections(s) {
-            if(s.active > 0) {
+            // Only draw connections when mouse is near stars (interactive style)
+            if(s.active > 0 && s.closest && s.closest.length > 0) {
                 for(var i in s.closest) {
                     var connection = s.closest[i];
                     var otherStar = connection.star;
                     var dist = connection.distance;
 
-                    // Only draw if both stars are somewhat active
+                    // Calculate connection opacity based on mouse proximity and connection strength
                     var connectionStrength = (s.active + otherStar.active) / 2;
-                    if(connectionStrength > 0.1) {
+                    var distanceOpacity = connection.strength * 0.6; // Distance-based opacity
+                    var finalOpacity = Math.min(connectionStrength * distanceOpacity, 0.8);
+
+                    if(finalOpacity > 0.1) { // Only draw visible connections
                         ctx.beginPath();
                         ctx.moveTo(s.x, s.y);
                         ctx.lineTo(otherStar.x, otherStar.y);
-                        ctx.strokeStyle = 'rgba(156,217,249,' + connectionStrength * 0.5 + ')';
-                        ctx.lineWidth = connectionStrength * 2;
+                        ctx.strokeStyle = 'rgba(156,217,249,' + finalOpacity + ')';
+                        ctx.lineWidth = Math.max(finalOpacity * 1.5, 0.5);
                         ctx.stroke();
                     }
                 }
