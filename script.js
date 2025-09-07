@@ -48,7 +48,9 @@ function triggerFadeIns() {
             const element = document.querySelector(selector);
             if (element) {
                 element.classList.add('fade-in');
-                console.log(`Fading in: ${selector}`);
+                console.log(`Fading in: ${selector}`, element);
+            } else {
+                console.log(`Element not found: ${selector}`);
             }
         }, index * 300); // 300ms delay between each element
     });
@@ -323,14 +325,7 @@ function initCanvasAnimation(isMobile = false) {
     })();
 }
 
-// ===========================================
-// HERO ANIMATIONS - Magnetic Buttons & Parallax
-// ===========================================
-
-function initHeroAnimations(isMobile = false) {
-    // Simplified hero animations - removed magnetic effects and particles for better performance
-    console.log('Hero animations initialized (simplified version)');
-}
+// Hero animations removed - using CSS animations instead
 
 /* ===========================================
    OTHER SECTIONS SCRIPTS
@@ -377,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initNavigation();
         initHamburgerMenu();
         initContactForm();
-        initHeroAnimations(isMobile);
+
         initCanvasAnimation(isMobile);
         initCTAButton();
         initIframeResponsive();
@@ -613,6 +608,10 @@ function closeHamburgerMenu() {
 window.navigateToSection = function(targetId) {
     console.log('navigateToSection called with:', targetId);
 
+    // Check if hamburger menu is currently open
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const isMenuOpen = hamburgerBtn && hamburgerBtn.classList.contains('active');
+
     // First, ensure all sections are hidden
     document.querySelectorAll('section').forEach(section => {
         section.style.display = 'none';
@@ -653,6 +652,13 @@ window.navigateToSection = function(targetId) {
     } else {
         footer.style.display = 'block';
         console.log('Footer shown');
+    }
+
+    // Preserve hamburger menu state if it was open
+    if (isMenuOpen) {
+        setTimeout(() => {
+            openHamburgerMenu();
+        }, 100); // Small delay to ensure DOM is updated
     }
 };
 
