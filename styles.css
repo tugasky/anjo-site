@@ -2,12 +2,25 @@
    ANJO CRAFTY - STATIC SITE STYLES
    =========================================== */
 
-/* Hero Entrance Animations - Step 1 */
+/* Hero Entrance Animations - Interactive Version */
 .hero-title {
-    opacity: 0;
-    transform: scale(0.8);
-    animation: bounceIn 1s ease-out 0.5s forwards;
-    position: relative;
+    position: fixed;
+    top: 50vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    z-index: 5;
+    font-size: clamp(4rem, 8vw, 6rem); /* Made bigger */
+}
+
+.hero-title:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.hero-title.clicked {
+    animation: moveUp 1s ease-out forwards;
 }
 
 .hero-title::before {
@@ -28,34 +41,6 @@
     z-index: -1;
 }
 
-.hero-subtitle {
-    opacity: 0;
-    animation: bounceIn 3s ease-out 4.2s forwards;
-}
-
-
-
-
-.hero-actions .cta-button {
-    opacity: 0;
-    transform: translateY(30px);
-}
-
-.hero-actions .cta-button:nth-child(1) {
-    animation: bounceIn 5s ease-out 1.5s forwards;
-}
-
-.hero-actions .cta-button:nth-child(2) {
-    animation: bounceIn 5s ease-out 1.7s forwards;
-}
-
-.hero-actions .cta-button:nth-child(3) {
-    animation: bounceIn 5s ease-out 1.9s forwards;
-}
-
-.hero-actions .cta-button:nth-child(4) {
-    animation: bounceIn 5s ease-out 2.1s forwards;
-}
 
 @keyframes bounceIn {
     0% {
@@ -113,6 +98,42 @@
         opacity: 0.4;
         transform: scale(1.02);
     }
+}
+
+/* Interactive Hero Animations */
+@keyframes moveUp {
+    0% {
+        top: 50vh;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        top: 20vh;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Initially hidden elements */
+.hero-subtitle,
+#container,
+.hero-actions,
+.hero-credit {
+    display: none;
+    opacity: 0;
+}
+
+.hero-subtitle.fade-in,
+#container.fade-in {
+    display: block;
+    opacity: 1;
+}
+
+.hero-actions.fade-in {
+    opacity: 1;
+}
+
+.hero-credit.fade-in {
+    display: block;
+    opacity: 1;
 }
 
 /* Hero Floating Button Animations - Step 3 */
@@ -714,7 +735,6 @@ body:not(.dark-mode) .cta-button.primary {
 }
 
 .cta-button:hover {
-    transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
@@ -1314,16 +1334,15 @@ body.dark-mode .footer {
 
     /* Enhanced touch targets for hero buttons */
     .hero-actions {
-        position: fixed;
         left: 50%;
         transform: translateX(-50%);
         z-index: 10;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0.75rem; /* Increased gap for better touch separation */
-        max-width: 320px;
-        width: calc(100% - 2rem);
-        bottom: 6rem;
+        grid-template-rows: repeat(2, auto);
+        gap: 2.5rem; /* Even more spacing between buttons */
+        width: auto;
+        bottom: 11rem;
     }
 
     .hero-actions .cta-button {
@@ -1880,8 +1899,7 @@ body {
 }
 
 .cta-button,
-.filter-btn,
-.submit-button {
+.filter-btn{
     position: relative;
     overflow: hidden;
 }
@@ -2070,6 +2088,10 @@ input[type=checkbox].pristine:focus {
         0 0 8px rgba(255, 255, 255, 0.4),
         0 0 16px rgba(255, 255, 255, 0.2),
         0 0 24px rgba(255, 255, 255, 0.1);
+}
+
+.hero-credit.fade-in {
+    bottom: 1rem; /* Move up when content appears */
 }
 
 /* Mobile Navigation Bar - Hidden by default on all devices */

@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
         initCanvasAnimation(isMobile);
         initCTAButton();
         initIframeResponsive();
+        initHeroTitleInteraction();
         // Set initial button classes based on current mode (now dark mode by default)
         updateButtonClasses();
 
@@ -917,4 +918,52 @@ function initCanvasAnimation(isMobile = false) {
         }
 
     })();
+}
+
+// ===========================================
+// HERO TITLE INTERACTION
+// ===========================================
+
+function initHeroTitleInteraction() {
+    const heroTitle = document.querySelector('.hero-title');
+    let hasBeenClicked = false;
+
+    if (heroTitle) {
+        heroTitle.addEventListener('click', function() {
+            if (hasBeenClicked) return; // Prevent multiple clicks
+            hasBeenClicked = true;
+
+            console.log('Hero title clicked - starting animation sequence');
+
+            // Add clicked class to trigger movement animation
+            this.classList.add('clicked');
+
+            // After title movement completes (1s), start fade-ins
+            setTimeout(() => {
+                triggerFadeIns();
+            }, 1000);
+        });
+
+        console.log('Hero title interaction initialized');
+    }
+}
+
+function triggerFadeIns() {
+    const elementsToFade = [
+        '.hero-subtitle',
+        '#container',
+        '.hero-actions',
+        '.hero-credit'
+    ];
+
+    // Stagger the fade-ins
+    elementsToFade.forEach((selector, index) => {
+        setTimeout(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.classList.add('fade-in');
+                console.log(`Fading in: ${selector}`);
+            }
+        }, index * 300); // 300ms delay between each element
+    });
 }
