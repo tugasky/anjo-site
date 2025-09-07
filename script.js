@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality with delays to ensure DOM is ready
     setTimeout(() => {
         initNavigation();
+        initHamburgerMenu();
         initContactForm();
         initHeroAnimations(isMobile);
         initCanvasAnimation(isMobile);
@@ -184,6 +185,101 @@ function initNavigation() {
     document.addEventListener('click', throttledCloseMenu, { passive: true });
 
     console.log('Navigation initialized');
+}
+
+// ===========================================
+// HAMBURGER MENU SYSTEM
+// ===========================================
+
+function initHamburgerMenu() {
+    console.log('Initializing hamburger menu...');
+
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileNavs = document.querySelectorAll('.mobile-nav');
+
+    if (!hamburgerBtn || mobileNavs.length === 0) {
+        console.log('Hamburger button or mobile navs not found');
+        return;
+    }
+
+    // Toggle hamburger menu
+    hamburgerBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isExpanded = this.classList.contains('active');
+
+        if (isExpanded) {
+            // Close menu
+            closeHamburgerMenu();
+        } else {
+            // Open menu
+            openHamburgerMenu();
+        }
+    });
+
+    // Close menu when clicking on navigation links
+    mobileNavs.forEach(mobileNav => {
+        const navLinks = mobileNav.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                closeHamburgerMenu();
+            });
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        const isClickInsideHamburger = hamburgerBtn.contains(e.target);
+        const isClickInsideAnyNav = Array.from(mobileNavs).some(nav => nav.contains(e.target));
+
+        if (!isClickInsideHamburger && !isClickInsideAnyNav) {
+            closeHamburgerMenu();
+        }
+    });
+
+    // Close menu on window resize (if switching to desktop)
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeHamburgerMenu();
+        }
+    });
+
+    console.log('Hamburger menu initialized');
+}
+
+function openHamburgerMenu() {
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileNavs = document.querySelectorAll('.mobile-nav');
+
+    if (hamburgerBtn && mobileNavs.length > 0) {
+        hamburgerBtn.classList.add('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'true');
+
+        // Add active class to all mobile navigation elements
+        mobileNavs.forEach(nav => {
+            nav.classList.add('active');
+        });
+
+        console.log('Hamburger menu opened for all sections');
+    }
+}
+
+function closeHamburgerMenu() {
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const mobileNavs = document.querySelectorAll('.mobile-nav');
+
+    if (hamburgerBtn && mobileNavs.length > 0) {
+        hamburgerBtn.classList.remove('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+
+        // Remove active class from all mobile navigation elements
+        mobileNavs.forEach(nav => {
+            nav.classList.remove('active');
+        });
+
+        console.log('Hamburger menu closed for all sections');
+    }
 }
 
 // Make navigateToSection globally available for inline onclick handlers
